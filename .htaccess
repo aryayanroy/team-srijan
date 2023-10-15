@@ -12,10 +12,6 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php [L]
 
-#redirect to extensionless URL
-RewriteCond %{THE_REQUEST} \s/+(.+)\.php [NC]
-RewriteRule ^ /%1 [R=301,L]
-
 # Custom Error Pages
-ErrorDocument 404 /formula-student/404
+ErrorDocument 404 /teamsrijan/404
 ErrorDocument 500 /500

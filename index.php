@@ -1,19 +1,14 @@
+<?php
+    include_once "phps/config.php";
+    include_once "phps/imagekit-config.php";
+?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include_once "phps/links.php"; ?>
     <title>Team Srijan | Our Hearts Don't Beat. They Rev...</title>
-    <link rel="shortcut icon" href="assets/public/branding/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@1,500;1,700&family=Signika:wght@500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css">
-    <link rel="stylesheet" href="assets/public/css/style.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header class="sticky-top">
@@ -27,7 +22,7 @@
                         <li class="nav-item"><a href="competitions" class="nav-link">Competitions</a></li>
                         <li class="nav-item"><a href="updates" class="nav-link">Updates</a></li>
                         <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Partners</a>
+                            <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Partners</button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a href="sponsors" class="dropdown-item">Sponsors</a></li>
                                 <li><a href="crowdfunding" class="dropdown-item">Crowdfunding</a></li>
@@ -35,7 +30,7 @@
                         </li>
                         <li class="nav-item"><a href="milestones" class="nav-link">Milestones</a></li>
                         <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</a>
+                            <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a href="overview" class="dropdown-item">Overview</a></li>
                                 <li><a href="crews" class="dropdown-item">Crews</a></li>
@@ -51,15 +46,29 @@
         <article class="container-xxl">
             <section id="hero-carousel" class="carousel slide carousel-container" style="height: 50vh" data-bs-ride="carousel">
                 <div class="carousel-inner h-100">
-                    <div class="carousel-item h-100 active">
-                        <a href="#"><img src="uploads/images/clement-delacre-M5s9Ffs1KqU-unsplash.jpg" alt="Race" class="w-100 h-100 object-fit-cover"></a>
-                    </div>
-                    <div class="carousel-item h-100">
-                        <a href="#"><img src="uploads/images/nicolas-peyrol-tU8bnQV80Jc-unsplash.jpg" alt="Race" class="w-100 h-100 object-fit-cover"></a>
-                    </div>
-                    <div class="carousel-item h-100">
-                        <a href="#"><img src="uploads/images/philip-myrtorp-sBl8QD-CGGQ-unsplash.jpg" alt="Race" class="w-100 h-100 object-fit-cover"></a>
-                    </div>
+                <?php
+                    $banners = json_decode(file_get_contents("jsons/banners.json"), true);
+                    $i = 1;
+                    foreach($banners as $banner){
+                        $image = $imageKit->url(
+                            [
+                                "path" => "banners/".$banner,
+                                "transformation" => [
+                                    [
+                                        "format" => "webp",
+                                        "width" => "1000",
+                                        "height" => "562"
+                                    ]
+                            ]
+                        ]);
+                        echo "<div class='carousel-item h-100";
+                        if($i==1){
+                            echo " active";
+                        }
+                        echo "'><img src='".$image."' alt='Banner ".$i++."' class='w-100 h-100 object-fit-cover'>
+                        </div>";
+                    }
+                ?>
                 </div>
                 <button type="button" class="carousel-control-prev" data-bs-target="#hero-carousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
                 <button type="button" class="carousel-control-next" data-bs-target="#hero-carousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
@@ -69,62 +78,60 @@
                     <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="2"></button>
                 </div>
             </section>
-            <hr>
-            <section>
-                <div class="alert alert-primary py-2">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolore dolor ipsam expedita deleniti saepe tempora maiores doloremque laboriosam amet ipsa non cumque eaque, impedit ut nulla repudiandae, eum quod nisi!. Help Team Srijan to go Electric. <a href="#" class="link-underline link-underline-opacity-0 link-underline-opacity-100-hover">Support us</a></div>
-            </section>
+                <?php
+                    $alert = json_decode(file_get_contents("jsons/alert.json"), true);
+                    if($alert["message"]!=null){
+                        echo "<hr>
+                            <section>
+                                <div class='alert alert-primary py-2'>".$alert["message"];
+                        if($alert["link"]!=null){
+                            if($alert["ref"]==null){
+                                $ref = "Read more";
+                            }else{
+                                $ref = $alert["ref"];
+                            }
+                            echo " <a href='".$alert["link"]."'>".$ref."</a></div>";
+                        }
+                        echo "</div>
+                            </section>";
+                    }
+                ?>
             <hr>
             <section>
                 <h2>Updates</h2>
-                <div class="carousel-container">
-                    <div class="owl-carousel owl-theme">
-                        <div class="item">
-                            <a href="#" class="text-decoration-none card rounded-0">
-                                <div class="ratio ratio-16x9"><img src="uploads/images/6d1e3e51bcf646a2b92a95af69cd5098.jpeg" alt="" class="object-fit-cover"></div>
-                                <div class="card-body">
-                                    <h6 class="card-title text-primary">Help Team Srijan go electric</h6>
-                                    <p class="card-text">As BITOSA Global, we want to support Team Srijan in this initiative and have committed to raise at least 6L for them to match what the college has contributed</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="item">
-                            <a href="#" class="text-decoration-none card rounded-0">
-                                <div class="ratio ratio-16x9"><img src="uploads/images/1667032837767.jpeg" alt="" class="object-fit-cover"></div>
-                                <div class="card-body">
-                                    <h6 class="card-title text-primary">Help Team Srijan go electric</h6>
-                                    <p class="card-text">As BITOSA Global, we want to support Team Srijan in this initiative and have committed to raise at least 6L for them to match what the college has contributed</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="item">
-                            <a href="#" class="text-decoration-none card rounded-0">
-                                <div class="ratio ratio-16x9"><img src="uploads/images/Gujarat-transforms-Tata-Nano-into-an-open-top-beach-car.jpg" alt="" class="object-fit-cover"></div>
-                                <div class="card-body">
-                                    <h6 class="card-title text-primary">Help Team Srijan go electric</h6>
-                                    <p class="card-text">As BITOSA Global, we want to support Team Srijan in this initiative and have committed to raise at least 6L for them to match what the college has contributed</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="item">
-                            <a href="#" class="text-decoration-none card rounded-0">
-                                <div class="ratio ratio-16x9"><img src="uploads/images/srijan_gadud.jpeg" alt="" class="object-fit-cover"></div>
-                                <div class="card-body">
-                                    <h6 class="card-title text-primary">Help Team Srijan go electric</h6>
-                                    <p class="card-text">As BITOSA Global, we want to support Team Srijan in this initiative and have committed to raise at least 6L for them to match what the college has contributed</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="item">
-                            <a href="#" class="text-decoration-none card rounded-0">
-                                <div class="ratio ratio-16x9"><img src="uploads/images/srijan_winner.jpeg" alt="" class="object-fit-cover"></div>
-                                <div class="card-body">
-                                    <h6 class="card-title text-primary">Help Team Srijan go electric</h6>
-                                    <p class="card-text">As BITOSA Global, we want to support Team Srijan in this initiative and have committed to raise at least 6L for them to match what the college has contributed</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                    $sql = $conn->prepare("SELECT image, title, body, date, link FROM updates ORDER BY date DESC LIMIT 10");
+                    try{
+                        $sql->execute();
+                        if($sql->rowCount()>0){
+                            echo "<div class='carousel-container'>
+                                <div class='owl-carousel owl-theme'>";
+                            while($row = $sql->fetch(PDO::FETCH_ASSOC)){
+                                $link = $row["link"];
+                                echo "<div class='item'>
+                                        <div class='card'>
+                                            <div class='ratio ratio-16x9'><img src='".image($row["image"], "updates", 800, 450)."' alt='".$row["title"]."' class='object-fit-cover'></div>
+                                            <div class='card-body'>
+                                                <h6 class='card-title text-primary'>".$row["title"]."</h6>
+                                                <p class='card-text'>".$row["body"]."</p>
+                                                <div class='small'>".(new DateTime($row["date"]))->format("j M Y")."</div>";
+                                            if($link!=null){
+                                                echo "<div class='mt-3'><a href='".$link."' class='btn btn-dark btn-sm' target='_blank'>Read more</a></div>";
+                                            }
+                                            echo "</div>
+                                        </div>
+                                    </div>";
+                                ;
+                            }
+                            echo "</div>
+                            </div>";
+                        }else{
+                            echo "<h6 class='text-center'>No updates for now.</h6><hr>";
+                        }
+                    }catch(PDOException $e){
+                        echo "<div>Couldn't load updates: ".$e."</div>";
+                    }
+                ?>
                 <div class="text-end"><a href="updates" class="link-underline link-underline-opacity-0 link-underline-opacity-100-hover"><span>Explore All Updates</span><i class="fa-solid fa-angles-right ms-1"></i></a></div>
             </section>
             <hr>
@@ -189,16 +196,7 @@
             <hr>
         </article>
     </main>
-    <footer class="navbar bg-body-secondary">
-        <div class="container-xl flex-column flex-sm-row">
-            <nav class="nav">
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-facebook"></i></a>
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-            </nav>
-            <small class="text-body-emphasis">© 2023 Team Srijan</small>
-        </div>
-    </footer>
+    <?php include_once "phps/footer.php"; ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>

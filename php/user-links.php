@@ -1,0 +1,2 @@
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@1,500;1,700&family=Signika:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/public/css/style.css">
