@@ -11,8 +11,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Basic - Home | Team Srijan</title>
 </head>
@@ -44,6 +44,8 @@
                         <nav class="nav nav-underline nav-fill mt-2">
                             <a href="home" class="nav-link active">Basic</a>
                             <a href="banners" class="nav-link">Banners</a>
+                            <a href="alert" class="nav-link">Alert</a>
+                            <a href="legacy" class="nav-link">Legacy</a>
                         </nav>
                         <?php include_once "php/page-2.php"; ?>
                     </article>

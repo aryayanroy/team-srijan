@@ -40,8 +40,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Gallery | Team Srijan</title>
 </head>
@@ -69,6 +69,10 @@
                             <a href="admin-updates" class="nav-link">Updates</a>
                             <a href="links" class="nav-link">Links</a>
                             <a href="admin-gallery" class="nav-link active">Gallery</a>
+                        </nav>
+                        <nav class="nav nav-underline nav-fill mt-2">
+                            <a href="gallery-basic" class="nav-link">Basic</a>
+                            <a href="admin-gallery" class="nav-link active">Updates</a>
                         </nav>
                         <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" enctype="multipart/form-data" class="row g-3 mt-1">
                             <div class="col-4">

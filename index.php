@@ -1,71 +1,33 @@
-<?php
-    include_once "phps/config.php";
-    include_once "phps/imagekit-config.php";
-?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <?php include_once "phps/links.php"; ?>
+    <?php
+        include_once "php/head.php";
+        include_once "php/user-head.php";
+    ?>
     <title>Team Srijan | Our Hearts Don't Beat. They Rev...</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <header class="sticky-top">
-        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-            <div class="container-xl">
-                <a href="" class="navbar-brand"><img src="assets/public/branding/team-srijan-logo-white.webp" alt="Team Srijan" height=32></a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#header-collapse"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                <div id="header-collapse" class="collapse navbar-collapse flex-grow-0">
-                    <ul class="navbar-nav">
-                        <li class="nav-item"><a href="garage" class="nav-link">Garage</a></li>
-                        <li class="nav-item"><a href="competitions" class="nav-link">Competitions</a></li>
-                        <li class="nav-item"><a href="updates" class="nav-link">Updates</a></li>
-                        <li class="nav-item dropdown">
-                            <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Partners</button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a href="sponsors" class="dropdown-item">Sponsors</a></li>
-                                <li><a href="crowdfunding" class="dropdown-item">Crowdfunding</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item"><a href="milestones" class="nav-link">Milestones</a></li>
-                        <li class="nav-item dropdown">
-                            <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">About</button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a href="overview" class="dropdown-item">Overview</a></li>
-                                <li><a href="crews" class="dropdown-item">Crews</a></li>
-                                <li><a href="gallery" class="dropdown-item">Gallery</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
     <main class="flex-grow-1 bg-body-tertiary">
+        <?php include_once "php/header.php"; ?>
         <article class="container-xxl">
             <section id="hero-carousel" class="carousel slide carousel-container" style="height: 50vh" data-bs-ride="carousel">
                 <div class="carousel-inner h-100">
                 <?php
-                    $banners = json_decode(file_get_contents("jsons/banners.json"), true);
+                    include_once "php/config.php";
+                    include_once "php/imagekit-config.php";
+                    $data = json_decode(file_get_contents("json/pages.json"), true);
+                    $home = $data["home"];
+                    $banners = $home["banners"];
                     $i = 1;
                     foreach($banners as $banner){
-                        $image = $imageKit->url(
-                            [
-                                "path" => "banners/".$banner,
-                                "transformation" => [
-                                    [
-                                        "format" => "webp",
-                                        "width" => "1000",
-                                        "height" => "562"
-                                    ]
-                            ]
-                        ]);
                         echo "<div class='carousel-item h-100";
                         if($i==1){
                             echo " active";
                         }
-                        echo "'><img src='".$image."' alt='Banner ".$i++."' class='w-100 h-100 object-fit-cover'>
+                        echo "'><img src='".image($banner, "banners", 1000, 562)."' alt='Banner ".$i++."' class='w-100 h-100 object-fit-cover'>
                         </div>";
                     }
                 ?>
@@ -73,13 +35,20 @@
                 <button type="button" class="carousel-control-prev" data-bs-target="#hero-carousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
                 <button type="button" class="carousel-control-next" data-bs-target="#hero-carousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="0" class="active"></button>
-                    <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="1"></button>
-                    <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="2"></button>
+                    <?php
+                        $i = 0;
+                        while($i<count($banners)){
+                            echo "<button type='button' data-bs-target='#hero-carousel' data-bs-slide-to='".$i++."'";
+                            if($i == 1){
+                                echo " class='active'";
+                            }
+                            echo "></button>";
+                        }
+                    ?>
                 </div>
             </section>
                 <?php
-                    $alert = json_decode(file_get_contents("jsons/alert.json"), true);
+                    $alert = $home["alert"];
                     if($alert["message"]!=null){
                         echo "<hr>
                             <section>
@@ -100,12 +69,12 @@
             <section>
                 <h2>Updates</h2>
                 <?php
-                    $sql = $conn->prepare("SELECT image, title, body, date, link FROM updates ORDER BY date DESC LIMIT 10");
+                    $sql = $conn->prepare("SELECT image, title, body, date, link FROM updates ORDER BY id DESC LIMIT 10");
                     try{
                         $sql->execute();
                         if($sql->rowCount()>0){
                             echo "<div class='carousel-container'>
-                                <div class='owl-carousel owl-theme'>";
+                                    <div id='updates-carousel' class='owl-carousel owl-theme'>";
                             while($row = $sql->fetch(PDO::FETCH_ASSOC)){
                                 $link = $row["link"];
                                 echo "<div class='item'>
@@ -136,77 +105,86 @@
             </section>
             <hr>
             <section class="row gy-3">
-                <div class="col-sm-4">
-                    <h1 class="mb-0 text-center">35+</h1>
-                    <h5 class="mb-0 text-center">Awards</h5>
-                </div>
-                <div class="col-sm-4">
-                    <h1 class="mb-0 text-center">13</h1>
-                    <h5 class="mb-0 text-center">Competitions</h5>
-                </div>
-                <div class="col-sm-4">
-                    <h1 class="mb-0 text-center">8</h1>
-                    <h5 class="mb-0 text-center">Generations</h5>
+                <?php
+                    $legacy = $home["legacy"];
+                    foreach($legacy as $key => $value){
+                        echo "<div class='col-sm-4'>
+                            <h1 class='mb-0 text-center'>".$value."</h1>
+                            <h5 class='mb-0 text-center'>".$key."</h5>
+                        </div>";
+                    }
+                ?>
+            </section>
+            <hr>
+            <?php
+                $home = $data["home"];
+            ?>
+            <section class="hero-image position-relative" style="background-image: url(<?php echo image($home["hero"], "heros", 1320, 742); ?>)">
+                <div class="mb-0 position-absolute top-50 start-50 translate-middle">
+                    <h1 class="text-center"><?php echo $home["text"]; ?></h1>
+                    <p class="mb-0 text-center"><?php echo $home["overview"]; ?></p>
                 </div>
             </section>
             <hr>
-            <section>
-                <div class="row gy-3">
-                    <div class="col-sm-6 col-md-5 col-lg-4">
-                        <a href="#" class="ratio ratio-4x3"><img src="uploads/images/clement-delacre-M5s9Ffs1KqU-unsplash.jpg" alt="" class="object-fit-cover"></a>
-                    </div>
-                    <div class="col-sm-6 col-md-7 col-lg-8">
-                        <h2><a href="#" class="text-decoration-none">Who Are We?</a></h2>
-                        <p>Take a look at the cars and trikes we’ve designed and fabricated since 2010- the year it all started. We took these cars to various national competitions and have won accolades. Till now, all of our cars were internal combustion engine cars. The world is changing and is taking a shift towards a more sustainable and greener future. We at IITG Racing embrace this change and are planning to shift our manufacturing to wholly electric in the next couple of years.</p>
-                        <a href="updates" class="link-underline link-underline-opacity-0 link-underline-opacity-100-hover"><span>Explore Garage</span><i class="fa-solid fa-angles-right ms-1"></i></a>
-                    </div>
-                </div>
-            </section>
-            <hr>
-            <section>
-                <div class="row gy-3 flex-row-reverse">
-                    <div class="col-sm-6 col-md-5 col-lg-4">
-                        <a href="#" class="ratio ratio-4x3"><img src="uploads/images/nicolas-peyrol-tU8bnQV80Jc-unsplash.jpg" alt="" class="object-fit-cover"></a>
-                    </div>
-                    <div class="col-sm-6 col-md-7 col-lg-8">
-                        <h2><a href="#" class="text-decoration-none">Our Garage</a></h2>
-                        <p>Take a look at the cars and trikes we’ve designed and fabricated since 2010- the year it all started. We took these cars to various national competitions and have won accolades. Till now, all of our cars were internal combustion engine cars. The world is changing and is taking a shift towards a more sustainable and greener future. We at IITG Racing embrace this change and are planning to shift our manufacturing to wholly electric in the next couple of years.</p>
-                        <a href="updates" class="link-underline link-underline-opacity-0 link-underline-opacity-100-hover"><span>Explore Garage</span><i class="fa-solid fa-angles-right ms-1"></i></a>
-                    </div>
-                </div>
-            </section>
-            <hr>
-            <section>
-                <div class="row gy-3">
-                    <div class="col-sm-6 col-md-5 col-lg-4">
-                        <a href="#" class="ratio ratio-4x3"><img src="uploads/images/philip-myrtorp-sBl8QD-CGGQ-unsplash.jpg" alt="" class="object-fit-cover"></a>
-                    </div>
-                    <div class="col-sm-6 col-md-7 col-lg-8">
-                        <h2><a href="#" class="text-decoration-none">Crowdfunding</a></h2>
-                        <p>Take a look at the cars and trikes we’ve designed and fabricated since 2010- the year it all started. We took these cars to various national competitions and have won accolades. Till now, all of our cars were internal combustion engine cars. The world is changing and is taking a shift towards a more sustainable and greener future. We at IITG Racing embrace this change and are planning to shift our manufacturing to wholly electric in the next couple of years.</p>
-                        <a href="updates" class="link-underline link-underline-opacity-0 link-underline-opacity-100-hover"><span>Explore Garage</span><i class="fa-solid fa-angles-right ms-1"></i></a>
-                    </div>
-                </div>
-            </section>
-            <hr>
+            <?php
+                unset($data["home"], $data["updates"], $data["sponsors"]);
+                $keys = array_keys($data);
+                shuffle($keys);
+                foreach ($keys as $i => $key) {
+                    echo "<section>
+                            <div class='row gy-3".($i%2==0?null:" flex-row-reverse")."'>
+                                <div class='col-sm-6 col-md-5 col-lg-4'>
+                                    <a href='".$key."' class='ratio ratio-4x3'><img src='".image($data[$key]["hero"], "heros", 416, 312)."' alt='".ucfirst($key)."' class='object-fit-cover'></a>
+                                </div>
+                                <div class='col-sm-6 col-md-7 col-lg-8'>
+                                    <h2><a href='".$key."' class='text-decoration-none'>".ucfirst($key)."</a></h2>
+                                    <p>".$data[$key]["overview"]."</p>
+                                    <a href='".$key."' class='link-underline link-underline-opacity-0 link-underline-opacity-100-hover'><span>Explore more</span><i class='fa-solid fa-angles-right ms-1'></i></a>
+                                </div>
+                            </div>
+                        </section>
+                        <hr>";
+                }
+            ?>
             <section>
                 <h2>Sponsors</h2>
-                <a href="#"><img src="uploads/images/sponsors.png" alt="" class="w-100"></a>
+                <?php
+                    $sql = $conn->prepare("SELECT image, name FROM sponsors ORDER BY tier LIMIT 10");
+                    try{
+                        $sql->execute();
+                        if($sql->rowCount()>0){
+                            echo "<div class='carousel-container'>
+                                    <div id='sponsors-carousel' class='owl-carousel owl-theme'>";
+                            while($row = $sql->fetch(PDO::FETCH_ASSOC)){
+                                echo "<div class='item'>
+                                        <div class='ratio ratio-1x1'><img src='".image($row["image"], "sponsors", 143, 143)."' alt='".$row["name"]."' class='object-fit-cover'></div>
+                                    </div>";
+                                ;
+                            }
+                            echo "</div>
+                            </div>";
+                        }else{
+                            echo "<h6 class='text-center'>No sponsors for now.</h6><hr>";
+                        }
+                    }catch(PDOException $e){
+                        echo "<div>Couldn't load sponsors: ".$e."</div>";
+                    }
+                ?>
             </section>
             <hr>
         </article>
     </main>
-    <?php include_once "phps/footer.php"; ?>
+    <?php include_once "php/footer.php"; ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 <script>
     $(document).ready(function(){
-        $(".owl-carousel").owlCarousel({
+        $("#updates-carousel").owlCarousel({
             loop: true,
-            margin: 10,
             autoplay:true,
+            margin: 10,
             autoplayTimeout:5000,
             autoplayHoverPause:true,
             responsive:{
@@ -234,6 +212,40 @@
                     stagePadding: 100,
                     mouseDrag: false
                 }
+            }
+        })
+        $("#sponsors-carousel").owlCarousel({
+            loop: true,
+            autoplay:true,
+            margin: 10,
+            autoplayTimeout:1000,
+            responsive:{
+                0:{
+                    items: 2,
+                    stagePadding: 10
+                },
+                320:{
+                    items: 3,
+                    stagePadding: 20
+                },
+                375:{
+                    items: 4,
+                    stagePadding: 25
+                },
+                425:{
+                    items: 5,
+                    stagePadding: 30
+                },
+                768:{
+                    items: 7,
+                    stagePadding: 40,
+                    mouseDrag: false
+                },
+                1024:{
+                    items: 8,
+                    stagePadding: 50,
+                    mouseDrag: false
+                },
             }
         })
     })

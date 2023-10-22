@@ -34,7 +34,7 @@
     }
 
     if(isset($_GET["delete"])){
-        $sql = $conn->prepare("DELETE FROM history WHERE id = ?");
+        $sql = $conn->prepare("DELETE FROM crews WHERE id = ?");
         $sql->bindParam(1, $_GET["delete"], PDO::PARAM_INT);
         $response = array("status" => false, "message" => "No response");
         try{
@@ -51,8 +51,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Crews | Team Srijan</title>
 </head>
@@ -90,7 +90,7 @@
                         <div class="row my-3">
                             <div class="col-2"><button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#add-new"><i class="fa-solid fa-plus me-2"></i><span>Add new</span></button></div>
                             <div class="col-10">
-                                <?php include_once "php/response-1.php"; ?>
+                                <?php include_once "php/response-2.php"; ?>
                             </div>
                         </div>
                         <table class="table table-bordered table-striped">
@@ -101,47 +101,41 @@
                                 <th>Year</th>
                                 <th>Team</th>
                                 <th>Email</th>
-                                <th>Social Media</th>
+                                <th>Social</th>
                                 <th>Action</th>
                             </tr>
                             <?php
-                                $sql = $conn->prepare("SELECT * FROM crews ORDER BY name");
+                                include_once "php/pagination-1.php";
+                                $sql = $conn->prepare("SELECT c.image, c.name, c.year, t.name AS team, c.email, c.link, c.id FROM crews AS c JOIN teams AS t ON c.team = t.id ORDER BY c.name LIMIT ?, 10");
+                                $sql->bindParam(1, $offset, PDO::PARAM_INT);
                                 try{
                                     $sql->execute();
                                     if($sql->rowCount()>0){
-                                        $i = 1;
+                                        $i = $offset;
                                         while($row = $sql->fetch(PDO::FETCH_ASSOC)){
-                                            $team = $row["team"];
-                                            $image = $imageKit->url(
-                                                [
-                                                    "path" => "history/".$row["image"],
-                                                    "transformation" => [
-                                                        [
-                                                            "format" => "webp",
-                                                            "width" => "54",
-                                                            "height" => "54"
-                                                        ]
-                                                ]
-                                            ]);
                                             echo "<tr>
-                                                <td class='text-center'>".$i++."</td>
-                                                <td><img src='".$image."' alt='".$row["name"]."'></td>
+                                                <td class='text-center'>".++$i."</td>
+                                                <td class='text-center'><img src='".image($row["image"], "history", 54, 54)."' alt='".$row["name"]."' width=54></td>
                                                 <td>".$row["name"]."</td>
-                                                <td>K-".$row["year"]."</td>
-                                                <td></td>
-                                                <td><a href='mailto:".$row["email"]."' target='_blank'>".$row["email"]."</a></td>
-                                                <td><a href='".$row["link"]."' target='_blank'>".$row["link"]."</a></td>
-                                                <td class='text-center'><button type='button' class='btn btn-danger btn-sm data-delete' value='".$row["id"]."'><i class='fa-solid fa-trash'></i></button></td>
+                                                <td class='text-end text-nowrap'>K-".$row["year"]."</td>
+                                                <td>".$row["team"]."</td>
+                                                <td class='text-break'><a href='mailto:".$row["email"]."' target='_blank' class='text-decoration-none'>".$row["email"]."</a></td>
+                                                <td class='text-break'><a href='".$row["link"]."' target='_blank' class='text-decoration-none'>".$row["link"]."</a></td>
+                                                <td class='text-center'><button type='button' class='btn btn-link link-danger delete-btn' value='".$row["id"]."'><i class='fa-solid fa-trash'></i></button></td>
                                             </tr>";
                                         }
                                     }else{
-                                        echo "<tr><td colspan='5' class='text-center'>No crew member.</td><tr>";
+                                        echo "<tr><td colspan='8' class='text-center'>No crew member.</td><tr>";
                                     }
                                 }catch(PDOException $e){
-                                    echo "<tr><td colspan='5' class='text-center'>Internal error: ".$e."</td><tr>";
+                                    echo "<tr><td colspan='8' class='text-center'>Internal error: ".$e."</td><tr>";
                                 }
                             ?>
                         </table>
+                        <?php
+                            $sql = $conn->prepare("SELECT COUNT(*) FROM crews");
+                            include_once "php/pagination-2.php";
+                        ?>
                     </article>
                 </div>
             </div>
@@ -150,7 +144,7 @@
     <?php include_once "php/footer.php"; ?>
     <!-- Off Canvas -->
     <div id="add-new" class="modal fade">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" enctype="multipart/form-data" class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add New</h5>
@@ -185,11 +179,22 @@
                         <div class="col-6">
                             <div class="form-floating">
                                 <select id="team" name="team" class="form-select">
-                                    <?php
-                                        foreach($teams as $key => $value){
-                                            echo "<option value=".$key.">".$value."</option>";
+                                <?php
+                                    $sql = $conn->prepare("SELECT * FROM teams ORDER BY name");
+                                    try{
+                                        $sql->execute();
+                                        if($sql->rowCount()>0){
+                                            $i = 1;
+                                            while($row = $sql->fetch(PDO::FETCH_ASSOC)){
+                                                echo "<option value=".$row["id"].">".$row["name"]."</option>";
+                                            }
+                                        }else{
+                                            echo "<option disabled>No teams available</option>";
                                         }
-                                    ?>
+                                    }catch(PDOException $e){
+                                        echo "<option disabled>Internal error</option>";
+                                    }
+                                ?>
                                 </select>
                                 <label for="team">Team</label>
                             </div>
@@ -217,5 +222,5 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="assets/public/js/delete.js"></script>
+<script src="assets/public/js/admin.js"></script>
 </html>

@@ -3,7 +3,6 @@
     include_once "php/admin.php";
     include_once "php/imagekit-config.php";
 
-    $page = "home";
     $json = "json/pages.json";
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -48,8 +47,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Banners - Home | Team Srijan</title>
 </head>
@@ -81,6 +80,8 @@
                         <nav class="nav nav-underline nav-fill mt-2">
                             <a href="home" class="nav-link">Basic</a>
                             <a href="banners" class="nav-link active">Banners</a>
+                            <a href="alert" class="nav-link">Alert</a>
+                            <a href="legacy" class="nav-link">Legacy</a>
                         </nav>
                         <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" enctype="multipart/form-data" class="row mt-3">
                             <div class="col-4">

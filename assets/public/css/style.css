@@ -25,13 +25,11 @@ h1, h2, h3, h4{
 
 .hero-image{
     height: 50vh;
+    color:white;
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     background-color: grey;
     background-blend-mode: multiply;
-}
-.hero-image>h1{
-    color:white
 }

@@ -1,40 +1,22 @@
 <?php
     include_once "php/session.php";
     include_once "php/admin.php";
-    include_once "php/imagekit-config.php";
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
-        $image = time();
-        $upload = $imageKit->uploadFile([
-            "file" => fopen($_FILES["image"]["tmp_name"], "r"),
-            "fileName" => $image,
-            "useUniqueFileName" => false,
-            "folder" => "history"
-        ]);
-        $status = $upload->responseMetadata["statusCode"];
         $response = array("status" => false, "message" => "No response.");
-        if($upload->error == null && $status == 200){
-            $sql = $conn->prepare("INSERT INTO crews (image, year, name, team, email, link) VALUES (?, ?, ?, ?, ?, ?)");
-            $sql->bindParam(1, $image, PDO::PARAM_INT);
-            $sql->bindParam(2, $_POST["year"], PDO::PARAM_INT);
-            $sql->bindParam(3, $_POST["name"], PDO::PARAM_STR);
-            $sql->bindParam(4, $_POST["team"], PDO::PARAM_INT);
-            $sql->bindParam(5, $_POST["email"], PDO::PARAM_STR);
-            $sql->bindParam(6, $_POST["link"], PDO::PARAM_STR);
-            try{
-                $sql->execute();
-                $response["status"] = true;
-                $response["message"] = "Successfully added.";
-            }catch(PDOException $e){
-                $response["message"] = "Couldn't record data: ".$e;
-            }
-        }else{
-            $response["message"] = "Couldn't upload image. Error code: ".$status;
+        $sql = $conn->prepare("INSERT INTO teams (name) VALUES (?)");
+        $sql->bindParam(1, $_POST["name"], PDO::PARAM_STR);
+        try{
+            $sql->execute();
+            $response["status"] = true;
+            $response["message"] = "Successfully added.";
+        }catch(PDOException $e){
+            $response["message"] = "Couldn't record data: ".$e;
         }
     }
 
     if(isset($_GET["delete"])){
-        $sql = $conn->prepare("DELETE FROM history WHERE id = ?");
+        $sql = $conn->prepare("DELETE FROM teams WHERE id = ?");
         $sql->bindParam(1, $_GET["delete"], PDO::PARAM_INT);
         $response = array("status" => false, "message" => "No response");
         try{
@@ -51,10 +33,10 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
-    <title>Crews | Team Srijan</title>
+    <title>Teams - Crews | Team Srijan</title>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body-secondary">
     <?php include_once "php/admin-header.php"; ?>
@@ -87,56 +69,54 @@
                             <a href="admin-crews" class="nav-link">Crews</a>
                             <a href="teams" class="nav-link active">Teams</a>
                         </nav>
-                        <div class="row my-3">
-                            <div class="col-2"><button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#add-new"><i class="fa-solid fa-plus me-2"></i><span>Add new</span></button></div>
-                            <div class="col-6">
-                                <?php include_once "php/response-1.php"; ?>
+                        <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" class="row g-3 mt-1">
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" id="team" name="name" class="form-control" placeholder="Team" autocomplete="off" required>
+                                    <label for="team">Team</label>
+                                </div>
                             </div>
-                        </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary w-100">Save</button>
+                            </div>
+                            <div class="col-6">
+                                <?php include_once "php/response-2.php"; ?>
+                            </div>
+                        </form>
+                        <div class="alert alert-warning my-2">Terminating an team will result in the automatic removal of all associated cew members linked to it.</div>
                         <table class="table table-bordered table-striped">
                             <tr class="text-center">
                                 <th>Sl</th>
-                                <th>Image</th>
-                                <th>Crews</th>
+                                <th>Teams</th>
+                                <th>Action</th>
                             </tr>
                             <?php
-                                $sql = $conn->prepare("SELECT * FROM crews ORDER BY name");
+                                include_once "php/pagination-1.php";
+                                $sql = $conn->prepare("SELECT * FROM teams ORDER BY name LIMIT ?, 10");
+                                $sql->bindParam(1, $offset, PDO::PARAM_INT);
                                 try{
                                     $sql->execute();
                                     if($sql->rowCount()>0){
-                                        $i = 1;
+                                        $i = $offset;
                                         while($row = $sql->fetch(PDO::FETCH_ASSOC)){
-                                            $team = $row["team"];
-                                            $image = $imageKit->url(
-                                                [
-                                                    "path" => "history/".$row["image"],
-                                                    "transformation" => [
-                                                        [
-                                                            "format" => "webp",
-                                                            "width" => "54",
-                                                            "height" => "54"
-                                                        ]
-                                                ]
-                                            ]);
                                             echo "<tr>
-                                                <td class='text-center'>".$i++."</td>
-                                                <td><img src='".$image."' alt='".$row["name"]."'></td>
+                                                <td class='text-center'>".++$i."</td>
                                                 <td>".$row["name"]."</td>
-                                                <td>K-".$row["year"]."</td>
-                                                <td></td>
-                                                <td><a href='mailto:".$row["email"]."' target='_blank'>".$row["email"]."</a></td>
-                                                <td><a href='".$row["link"]."' target='_blank'>".$row["link"]."</a></td>
-                                                <td class='text-center'><button type='button' class='btn btn-danger btn-sm data-delete' value='".$row["id"]."'><i class='fa-solid fa-trash'></i></button></td>
+                                                <td class='text-center'><button type='button' class='btn btn-link link-danger delete-btn' value='".$row["id"]."'><i class='fa-solid fa-trash'></i></button></td>
                                             </tr>";
                                         }
                                     }else{
-                                        echo "<tr><td colspan='5' class='text-center'>No crew member.</td><tr>";
+                                        echo "<tr><td colspan='3' class='text-center'>No crew member.</td><tr>";
                                     }
                                 }catch(PDOException $e){
-                                    echo "<tr><td colspan='5' class='text-center'>Internal error: ".$e."</td><tr>";
+                                    echo "<tr><td colspan='3' class='text-center'>Internal error: ".$e."</td><tr>";
                                 }
                             ?>
                         </table>
+                        <?php
+                            $sql = $conn->prepare("SELECT COUNT(*) FROM teams");
+                            include_once "php/pagination-2.php";
+                        ?>
                     </article>
                 </div>
             </div>
@@ -146,5 +126,5 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="assets/public/js/delete.js"></script>
+<script src="assets/public/js/admin.js"></script>
 </html>

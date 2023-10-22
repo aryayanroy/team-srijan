@@ -1,10 +1,6 @@
 <?php
     include_once "php/session.php";
     include_once "php/admin.php";
-    include_once "php/imagekit-config.php";
-
-    $page = "sponsors";
-    include_once "php/page-1.php";
 
     include_once "php/response-1.php";
 ?>
@@ -15,7 +11,7 @@
         include_once "php/head.php";
         include_once "php/admin-head.php";
     ?>
-    <title>Basic - Sponsors | Team Srijan</title>
+    <title>Reset | Team Srijan</title>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body-secondary">
     <?php include_once "php/admin-header.php"; ?>
@@ -27,24 +23,20 @@
                         <nav class="p-3 nav nav-pills flex-column">
                             <a href="personal" class="nav-link">Account</a>
                             <a href="admin-updates" class="nav-link">General</a>
-                            <a href="admin-sponsors" class="nav-link active">Sponsorship</a>
+                            <a href="admin-sponsors" class="nav-link">Sponsorship</a>
                             <a href="admin-milestones" class="nav-link">Legacy</a>
-                            <a href="admins" class="nav-link">Admins</a>
+                            <a href="admins" class="nav-link active">Admins</a>
                         </nav>
                     </aside>
                 </div>
                 <div class="col-9">
                     <article class="p-3 border bg-white rounded">
-                        <h3 class="pb-2 border-bottom">Sponsorships</h3>
-                        <nav class="nav nav-underline nav-fill">
-                            <a href="admin-updates" class="nav-link active">Sponsors</a>
-                            <a href="admin-crowdfunding" class="nav-link">Crowdfunding</a>
+                        <h3 class="pb-2 border-bottom">Admins</h3>
+                        <nav class="nav nav-underline nav-fill mb-3">
+                            <a href="admins" class="nav-link">Add Admins</a>
+                            <a href="reset" class="nav-link active">Reset</a>
                         </nav>
-                        <nav class="nav nav-underline nav-fill mt-2">
-                            <a href="sponsor" class="nav-link active">Basic</a>
-                            <a href="admin-sponsors" class="nav-link">Sponsors</a>
-                        </nav>
-                        <?php include_once "php/page-2.php"; ?>
+                        <div class="alert alert-warning mb-0">This feature is currently in progress and will be made available in the near future.</div>
                     </article>
                 </div>
             </div>

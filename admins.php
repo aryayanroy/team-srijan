@@ -1,10 +1,9 @@
 <?php
-    include_once "php/admin/session.php";
-    include_once "phps/admin/admin.php";
-
-    $id = $_SESSION["id"];
+    include_once "php/session.php";
+    include_once "php/admin.php";
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
+        $response = array("status" => false, "message" => "No response");
         if($_POST["password"] == $_POST["confirm-password"]){
             $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
             $sql = $conn->prepare("INSERT INTO admins (name, email, password, parent) VALUES (?, ?, ?, ?)");
@@ -25,8 +24,9 @@
     }
 
     if(isset($_GET["delete"])){
-        $sql = $conn->prepare("DELETE FROM admins WHERE id = ?");
+        $sql = $conn->prepare("DELETE FROM admins WHERE id = ? AND parent = ?");
         $sql->bindParam(1, $_GET["delete"], PDO::PARAM_INT);
+        $sql->bindParam(2, $id, PDO::PARAM_INT);
         $response = array("status" => false, "message" => "No response");
         try{
             $sql->execute();
@@ -37,16 +37,19 @@
         }
     }
 
-    include_once "phps/admin/response.php";
+    include_once "php/response-1.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <?php include_once "phps/admin/links.php"; ?>
+    <?php
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
+    ?>
     <title>Add Admins | Team Srijan</title>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body-secondary">
-    <?php include_once "phps/admin/header.php"; ?>
+    <?php include_once "php/admin-header.php"; ?>
     <main class="flex-grow-1 py-3">
         <div class="container-xxl">
             <div class="row">
@@ -63,7 +66,7 @@
                 </div>
                 <div class="col-9">
                     <article class="p-3 border bg-white rounded">
-                        <h3 class="pb-2 border-bottom">Add Admins</h3>
+                        <h3 class="pb-2 border-bottom">Admins</h3>
                         <nav class="nav nav-underline nav-fill">
                             <a href="add" class="nav-link active">Add Admins</a>
                             <a href="reset" class="nav-link">Reset</a>
@@ -71,7 +74,7 @@
                         <div class="row my-3">
                             <div class="col-2"><button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#add-new"><i class="fa-solid fa-plus me-2"></i><span>Add new</span></button></div>
                             <div class="col-10">
-                                <?php include_once "phps/admin/response-alert.php"; ?>
+                                <?php include_once "php/response-2.php"; ?>
                             </div>
                         </div>
                         <div class="alert alert-warning">Terminating an account will result in the automatic removal of all associated sub-accounts linked to it.</div>
@@ -83,18 +86,20 @@
                                 <th>Action</th>
                             </tr>
                             <?php
-                                $sql = $conn->prepare("SELECT id, name, email FROM admins WHERE parent = ? ORDER BY name");
+                                include_once "php/pagination-1.php";
+                                $sql = $conn->prepare("SELECT id, name, email FROM admins WHERE parent = ? ORDER BY name LIMIT ?, 10");
+                                $sql->bindParam(1, $id, PDO::PARAM_INT);
+                                $sql->bindParam(2, $offset, PDO::PARAM_INT);
                                 try{
-                                    $sql->bindParam(1, $id, PDO::PARAM_INT);
                                     $sql->execute();
                                     if($sql->rowCount()>0){
-                                        $i = 1;
+                                        $i = $offset;
                                         while($row = $sql->fetch(PDO::FETCH_ASSOC)){
                                             echo "<tr>
-                                                <td class='text-center'>".$i++."</td>
+                                                <td class='text-center'>".++$i."</td>
                                                 <td>".$row["name"]."</td>
                                                 <td>".$row["email"]."</td>
-                                                <td class='text-center'><button type='button' class='btn btn-danger btn-sm data-delete' value='".$row["id"]."'><i class='fa-solid fa-trash'></i></button></td>
+                                                <td class='text-center'><button type='button' class='btn btn-link link-danger delete-btn' value='".$row["id"]."'><i class='fa-solid fa-trash'></i></button></td>
                                             </tr>";
                                         }
                                     }else{
@@ -105,12 +110,17 @@
                                 }
                             ?>
                         </table>
+                        <?php
+                            $sql = $conn->prepare("SELECT COUNT(*) FROM admins WHERE parent = ?");
+                            $sql->bindParam(1, $id, PDO::PARAM_INT);
+                            include_once "php/pagination-2.php";
+                        ?>
                     </article>
                 </div>
             </div>
         </div>
     </main>
-    <?php include_once "phps/footer.php"; ?>
+    <?php include_once "php/footer.php"; ?>
     <!-- Off Canvas -->
     <div id="add-new" class="modal fade">
         <div class="modal-dialog">
@@ -158,5 +168,5 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="assets/public/js/delete.js"></script>
+<script src="assets/public/js/admin.js"></script>
 </html>

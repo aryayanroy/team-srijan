@@ -12,8 +12,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Overview | Team Srijan</title>
 </head>
@@ -29,7 +29,7 @@
                             <a href="admin-updates" class="nav-link">General</a>
                             <a href="admin-sponsors" class="nav-link">Sponsorship</a>
                             <a href="admin-milestones" class="nav-link active">Legacy</a>
-                            <a href="add" class="nav-link">Admins</a>
+                            <a href="admins" class="nav-link">Admins</a>
                         </nav>
                     </aside>
                 </div>

@@ -45,8 +45,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Sponsors | Team Srijan</title>
 </head>
@@ -62,7 +62,7 @@
                             <a href="admin-updates" class="nav-link">General</a>
                             <a href="admin-sponsors" class="nav-link active">Sponsorship</a>
                             <a href="admin-milestones" class="nav-link">Legacy</a>
-                            <a href="add" class="nav-link">Admins</a>
+                            <a href="admins" class="nav-link">Admins</a>
                         </nav>
                     </aside>
                 </div>
@@ -71,7 +71,7 @@
                         <h3 class="pb-2 border-bottom">Sponsorships</h3>
                         <nav class="nav nav-underline nav-fill">
                             <a href="admin-updates" class="nav-link active">Sponsors</a>
-                            <a href="alert" class="nav-link">Crowdfunding</a>
+                            <a href="admin-crowdfunding" class="nav-link">Crowdfunding</a>
                         </nav>
                         <nav class="nav nav-underline nav-fill mt-2">
                             <a href="sponsor" class="nav-link">Basic</a>
@@ -100,7 +100,7 @@
                                 try{
                                     $sql->execute();
                                     if($sql->rowCount()>0){
-                                        $i = 1;
+                                        $i = $offset;
                                         while($row = $sql->fetch(PDO::FETCH_ASSOC)){
                                             $tier = $row["tier"];
                                             if($tier == 1){
@@ -115,7 +115,7 @@
                                                 $tier = "V";
                                             }
                                             echo "<tr>
-                                                <td class='text-center'>".$i++."</td>
+                                                <td class='text-center'>".++$i."</td>
                                                 <td class='text-center'>".$tier."</td>
                                                 <td>".$row["name"]."</td>
                                                 <td><img src='".image($row["image"], "sponsors", 96, 96)."' alt='".$row["name"]."' width='96'></td>

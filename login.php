@@ -5,6 +5,7 @@
         die();
     }
     if($_SERVER["REQUEST_METHOD"]=="POST"){
+        $response = array("status" => false, "message" => "No response.");
         include_once "php/config.php";
         $sql = $conn->prepare("SELECT id, password FROM admins WHERE email = ?");
         $sql->bindParam(1, $_POST["email"], PDO::PARAM_STR);
@@ -17,15 +18,15 @@
                     $_SESSION["id"] = $admin["id"];
                     header("Location: personal");
                 }else{
-                    $response = array("status" => false, "message" => "Invalid password.");
+                    $response["message"] = "Invalid password.";
                 }
             }else if($count == 0){
-                $response = array("status" => false, "message" => "No account was found.");
+                $response["message"] = "No account was found.";
             }else{
-                $response = array("status" => false, "message" => "Multiple accounts found. Please contact the administrator.");
+                $response["message"] = "Multiple accounts found. Please contact the administrator.";
             }
         }catch(PDOException $e){
-            $error = "Something went wrong. Try after some time.";
+            $response["message"] = "Internal server error.";
         }
     }
 
@@ -34,8 +35,8 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <?php include_once "php/links.php"; ?>
-    <?php include_once "php/admin-links.php"; ?>
+    <?php include_once "php/head.php"; ?>
+    <?php include_once "php/admin-head.php"; ?>
     <title>Login | Team Srijan</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -50,16 +51,15 @@
         <article class="container-xxl py-3">
             <section class="my-5">
                 <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" class="mx-auto" style="max-width: 300px">
-                    <div class="text-center mb-4"><img src="assets/public/branding/team-srijan-black-logo.webp" alt="Team Srijan" class="w-25"></div>
-                    <div class="form-floating">
+                    <div class="text-center"><img src="assets/public/branding/team-srijan-black-logo.webp" alt="Team Srijan" class="w-25"></div>
+                    <div class="form-floating my-3">
                         <input type="email" id="email" name="email" class="form-control" placeholder="Email" spellcheck="false" autocomplete="off" required>
                         <label for="email">Email address</label>
                     </div>
-                    <div class="form-floating mt-3 mb-2">
+                    <div class="form-floating">
                         <input type="password" id="password" name="password" class="form-control" placeholder="Password" autocomplete="off" required>
                         <label for="password">Password</label>
                     </div>
-                    <div><a href="recovery">Forgot password?</a></div>
                     <div class="my-3"><button type="submit" class="btn btn-primary w-100">Login</button></div>
                     <?php include_once "php/response-2.php"; ?>
                 </form>

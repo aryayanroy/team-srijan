@@ -1,7 +1,9 @@
 <?php
-    include_once "phps/admin/session.php";
-    include_once "phps/admin/admin.php";
+    include_once "php/session.php";
+    include_once "php/admin.php";
+
     if($_SERVER["REQUEST_METHOD"]=="POST"){
+        $response = array("status" => false, "message" => "No response.");
         if($_POST["new-password"]==$_POST["verify-password"]){
             $password = password_hash($_POST["new-password"],PASSWORD_DEFAULT);
             $sql = $conn->prepare("UPDATE admins SET password = ? WHERE id = ?");
@@ -9,24 +11,29 @@
             $sql->bindParam(2, $id, PDO::PARAM_INT);
             try{
                 $sql->execute();
-                $response = array("status" => true, "message" => "Password changed successfully.");
+                $response["status"] = true;
+                $response["message"] = "Password changed successfully.";
             }catch(PDOException $e){
-                $response = array("status" => false, "message" => "Couldn't change the password.");
+                $response["message"] = "Couldn't change the password: ".$e;
             }
         }else{
-            $response = array("status" => false, "message" => "Passwords didn't match.");
+            $response["message"] = "Passwords didn't match.";
         }
     }
-    include_once "phps/admin/response.php";
+
+    include_once "php/response-1.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <?php include_once "phps/admin/links.php"; ?>
+    <?php
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
+    ?>
     <title>Passoword | Team Srijan</title>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body-secondary">
-    <?php include_once "phps/admin/header.php"; ?>
+    <?php include_once "php/admin-header.php"; ?>
     <main class="flex-grow-1 py-3">
         <div class="container-xxl">
             <div class="row">
@@ -37,7 +44,7 @@
                             <a href="admin-updates" class="nav-link">General</a>
                             <a href="admin-sponsors" class="nav-link">Sponsorship</a>
                             <a href="admin-milestones" class="nav-link">Legacy</a>
-                            <a href="add" class="nav-link">Admins</a>
+                            <a href="admins" class="nav-link">Admins</a>
                         </nav>
                     </aside>
                 </div>
@@ -47,7 +54,6 @@
                         <nav class="nav nav-underline nav-fill mb-3">
                             <a href="personal" class="nav-link">Personal</a>
                             <a href="password" class="nav-link active">Passoword</a>
-                            <a href="delete" class="nav-link">Delete</a>
                         </nav>
                         <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" class="row g-3">
                             <div class="col-6">
@@ -66,7 +72,7 @@
                                 <button type="submit" class="btn btn-primary w-100">Save</button>
                             </div>
                             <div class="col-9">
-                                <?php include_once "phps/admin/response-alert.php"; ?>
+                                <?php include_once "php/response-2.php"; ?>
                             </div>
                         </form>
                     </article>
@@ -74,7 +80,9 @@
             </div>
         </div>
     </main>
-    <?php include_once "phps/footer.php"; ?>
+    <?php include_once "php/footer.php"; ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="assets/public/js/admin.js"></script>
 </html>

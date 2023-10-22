@@ -67,8 +67,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Garage | Team Srijan</title>
 </head>
@@ -126,15 +126,13 @@
                                     try{
                                         $sql->execute();
                                         if($sql->rowCount()>0){
-                                            $i = 1;
+                                            $i = $offset;
                                             while($row = $sql->fetch(PDO::FETCH_ASSOC)){
-                                                $images = json_decode($row["images"], true);
-                                                $specs = json_decode($row["specs"], true);
-                                                $achievements = array_filter(explode(".", $row["achievements"]), "strlen");
                                                 echo "<tr>
-                                                    <td class='text-center'>".$i++."</td>
+                                                    <td class='text-center'>".++$i."</td>
                                                     <td>";
 
+                                                $images = json_decode($row["images"], true);
                                                 foreach ($images as $image) {
                                                     echo "<div class='ratio ratio-16x9 mt-2'><img src='".image($image, "garage", 96, 54)."' alt='".$row["name"]."'  class='img-thumbnail object-fit-cover'></div>";
                                                 }
@@ -152,11 +150,12 @@
                                                         </tr>";
                                                     }
                                                 }
-
+                                                $specs = json_decode($row["specs"], true);
                                                 echo "</table>
                                                     </td>
                                                     <td>
                                                         <ul class='mb-0'>";
+                                                $achievements = array_filter(explode(".", $row["achievements"]), "strlen");
                                                 foreach ($achievements as $data) {
                                                     echo "<li>".$data.".</li>";
                                                 }
@@ -174,7 +173,7 @@
                                 ?>
                             </table>
                             <?php
-                                $sql = $conn->prepare("SELECT COUNT(*) FROM milestones");
+                                $sql = $conn->prepare("SELECT COUNT(*) FROM garage");
                                 include_once "php/pagination-2.php";
                             ?>
                         </div>

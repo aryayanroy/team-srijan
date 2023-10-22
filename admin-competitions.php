@@ -44,8 +44,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Competitions | Team Srijan</title>
 </head>
@@ -61,7 +61,7 @@
                             <a href="admin-updates" class="nav-link">General</a>
                             <a href="admin-sponsors" class="nav-link">Sponsorship</a>
                             <a href="admin-milestones" class="nav-link active">Legacy</a>
-                            <a href="add" class="nav-link">Admins</a>
+                            <a href="admins" class="nav-link">Admins</a>
                         </nav>
                     </aside>
                 </div>
@@ -101,10 +101,10 @@
                                 try{
                                     $sql->execute();
                                     if($sql->rowCount()>0){
-                                        $i = 1;
+                                        $i = $offset;
                                         while($row = $sql->fetch(PDO::FETCH_ASSOC)){
                                             echo "<tr>
-                                                <td class='text-center'>".$i++."</td>
+                                                <td class='text-center'>".++$i."</td>
                                                 <td class='text-center'><img src='".image($row["image"], "competitions", 96, 54)."' alt='".$row["title"]."'></td>
                                                 <td>".$row["title"]."</td>
                                                 <td>".$row["overview"]."</td>

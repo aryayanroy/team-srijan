@@ -5,15 +5,14 @@
 
     $page = "updates";
     include_once "php/page-1.php";
-
     include_once "php/response-1.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Basic - Updates | Team Srijan</title>
 </head>

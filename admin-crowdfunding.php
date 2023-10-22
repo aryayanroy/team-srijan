@@ -1,12 +1,6 @@
 <?php
     include_once "php/session.php";
     include_once "php/admin.php";
-    include_once "php/imagekit-config.php";
-
-    $page = "sponsors";
-    include_once "php/page-1.php";
-
-    include_once "php/response-1.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -15,7 +9,7 @@
         include_once "php/head.php";
         include_once "php/admin-head.php";
     ?>
-    <title>Basic - Sponsors | Team Srijan</title>
+    <title>Crowdfunding | Team Srijan</title>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body-secondary">
     <?php include_once "php/admin-header.php"; ?>
@@ -37,14 +31,10 @@
                     <article class="p-3 border bg-white rounded">
                         <h3 class="pb-2 border-bottom">Sponsorships</h3>
                         <nav class="nav nav-underline nav-fill">
-                            <a href="admin-updates" class="nav-link active">Sponsors</a>
-                            <a href="admin-crowdfunding" class="nav-link">Crowdfunding</a>
+                            <a href="admin-updates" class="nav-link">Sponsors</a>
+                            <a href="admin-crowdfunding" class="nav-link active">Crowdfunding</a>
                         </nav>
-                        <nav class="nav nav-underline nav-fill mt-2">
-                            <a href="sponsor" class="nav-link active">Basic</a>
-                            <a href="admin-sponsors" class="nav-link">Sponsors</a>
-                        </nav>
-                        <?php include_once "php/page-2.php"; ?>
+                        <div class="alert alert-warning mt-3 mb-0">This feature is currently in progress and will be made available in the near future.</div>
                     </article>
                 </div>
             </div>

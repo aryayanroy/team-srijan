@@ -15,12 +15,13 @@
                 $response["message"] = "Couldn't upload any image. Error code: ".$upload;
             }
         }
+        $data[$page]["text"] = $_POST["text"];
         $data[$page]["overview"] = $_POST["overview"];
         if(file_put_contents($json, json_encode($data))) {
             $response["status"] = true;
             $response["message"] = "Page info saved sucessfully.";
         }else{
             $response["message"] = "Something went wrong.";
-        }   
+        }
     }
 ?>

@@ -2,10 +2,10 @@
     include_once "php/session.php";
     include_once "php/admin.php";
 
-    $links_json = "json/links.json";
+    $json = "json/links.json";
     if($_SERVER["REQUEST_METHOD"]=="POST"){
         $response = array("status" => false, "message" => null);
-        if(file_put_contents($links_json, json_encode($_POST))) {
+        if(file_put_contents($json, json_encode($_POST))) {
             $response["status"] = true;
             $response["message"] = "Links updated successfully.";
         }else{
@@ -18,8 +18,8 @@
 <html lang="en" data-bs-theme="light">
 <head>
     <?php
-        include_once "php/links.php";
-        include_once "php/admin-links.php";
+        include_once "php/head.php";
+        include_once "php/admin-head.php";
     ?>
     <title>Links | Team Srijan</title>
 </head>
@@ -55,7 +55,7 @@
                                     <th>Link</th>
                                 </tr>
                                 <?php
-                                    $links = json_decode(file_get_contents($links_json), true);
+                                    $links = json_decode(file_get_contents($json), true);
                                 ?>
                                 <tr>
                                     <td><label for="facebook">Facebook</label></td>

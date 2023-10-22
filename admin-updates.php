@@ -43,8 +43,8 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <?php include_once "php/links.php"; ?>
-    <?php include_once "php/admin-links.php"; ?>
+    <?php include_once "php/head.php"; ?>
+    <?php include_once "php/admin-head.php"; ?>
     <title>Updates | Team Srijan</title>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body-secondary">
