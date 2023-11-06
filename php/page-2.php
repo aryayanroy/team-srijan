@@ -1,8 +1,8 @@
 <?php
-    $data = json_decode(file_get_contents($json), true)[$page];
-    $image = $data["hero"];
-    $text = $data["text"];
-    $overview = $data["overview"];
+    $data = json_decode(file_get_contents($json), true)[$page]??null;
+    $image = $data["hero"] ?? null;
+    $text = $data["text"] ?? null;
+    $overview = $data["overview"] ?? null;
 ?>
 <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" enctype="multipart/form-data" class="row g-3 mt-1">
     <div class="col-6">

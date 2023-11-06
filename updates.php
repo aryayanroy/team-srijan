@@ -28,7 +28,7 @@
                             print ($i++%2==0)?" flex-row-reverse":null;
                             echo "'><div class='col-sm-6 col-md-5 col-lg-4'>";
                             print ($link!=null)?"<a href='".$link."'":"<div";
-                            echo " class='ratio ratio-16x9'><img src='".image($row["image"], "updates", 480, 270)."' alt='".$row["title"]."' class='w-100 object-fit-cover'>";
+                            echo " class='ratio ratio-16x9'><img src='".image($row["image"], "updates", 480, 270)."' alt='".$row["title"]."' class='object-fit-cover rounded'>";
                             print ($link!=null)?"</a>":"</div>";
                             echo "</div>
                                 <div class='col-sm-6 col-md-7 col-lg-8'>

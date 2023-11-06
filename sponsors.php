@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
@@ -13,35 +12,48 @@
     <main class="flex-grow-1 bg-body-tertiary">
         <article class="container-xxl">
             <?php
-                include_once "php/imagekit-config.php";
-                $data = json_decode(file_get_contents("json/pages.json"), true);
-                $sponsors = $data["sponsors"];
+                $page = "sponsors";
+                include_once "php/page.php";
+                include_once "php/config.php";
+                include_once "php/pagination-1.php";
+                $sql = $conn->prepare("SELECT tier, name, image, link, description FROM sponsors ORDER BY tier LIMIT ?, 10");
+                $sql->bindParam(1, $offset, PDO::PARAM_INT);
+                try{
+                    $sql->execute();
+                    if($sql->rowCount()>0){
+                        $tier = 0;
+                        $map = ["I", "II", "III", "IV", "V"];
+                        while($row = $sql->fetch(PDO::FETCH_ASSOC)){
+                            $link = $row["link"];
+                            if($tier != $row["tier"]){
+                                $i = 1;
+                                $tier = $row["tier"];
+                                echo "<h3 class='text-center mb-3'><span class='px-2 border border-dark'>Tier ".($map[$tier-1]?? "VI")."</span></h3>";
+                            }
+                            echo "<section class='row gy-3 pb-3 border-bottom mb-3";
+                            print ($i++%2==0)?" flex-row-reverse":null;
+                            echo "'>
+                                    <div class='col-sm-5 col-md-4 col-lg-3'>
+                                        <a href='".$link."'class='ratio ratio-4x3'><img src='".image($row["image"], "sponsors", 306, 229)."' alt='".$row["name"]."' class='object-fit-cover rounded'></a>
+                                    </div>
+                                    <div class='col-sm-7 col-md-8 col-lg-9'>
+                                        <h3><a href='".$link."' class='text-decoration-none'>".$row["name"]."</a></h3>
+                                        <p>".$row["description"]."</p>
+                                    </div>
+                                </section>";
+                        }
+                    }else{
+                        echo "<div class='text-center'>No sponsors for now.</div>";
+                    }
+                }catch(PDOException $e){
+                    echo "<div class='text-center'>Internal error: ".$e."</div>";
+                }
+                $sql = $conn->prepare("SELECT COUNT(*) FROM sponsors");
+                include_once "php/pagination-2.php";
             ?>
-            <section class="hero-image position-relative" style="background-image: url(<?php echo image($sponsors["hero"], "heros", 1320, 742); ?>)">
-                <h1 class="mb-0 position-absolute top-50 start-50 translate-middle">Sponsors</h1>
-            </section>
-            <p></p>
-            <hr>
-            <section>
-                <h2 class="text-center">Title Sponsors</h2>
-            </section>
-            <hr>
-            <section>
-                <h2 class="text-center">Title Sponsors</h2>
-            </section>
-            <hr>
         </article>
     </main>
-    <footer class="navbar bg-body-secondary">
-        <div class="container-xl flex-column flex-sm-row">
-            <nav class="nav">
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-facebook"></i></a>
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-            </nav>
-            <small class="text-body-emphasis">© 2023 Team Srijan</small>
-        </div>
-    </footer>
+    <?php include_once "php/footer.php"; ?>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<?php include_once "php/scripts.php"; ?>
 </html>

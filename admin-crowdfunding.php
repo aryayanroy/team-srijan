@@ -31,7 +31,7 @@
                     <article class="p-3 border bg-white rounded">
                         <h3 class="pb-2 border-bottom">Sponsorships</h3>
                         <nav class="nav nav-underline nav-fill">
-                            <a href="admin-updates" class="nav-link">Sponsors</a>
+                            <a href="admin-sponsors" class="nav-link">Sponsors</a>
                             <a href="admin-crowdfunding" class="nav-link active">Crowdfunding</a>
                         </nav>
                         <div class="alert alert-warning mt-3 mb-0">This feature is currently in progress and will be made available in the near future.</div>

@@ -5,9 +5,9 @@
         include_once "php/head.php";
         include_once "php/user-head.php";
     ?>
-    <title>Team Srijan | Our Hearts Don't Beat. They Rev...</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css">
+    <title>Team Srijan | Our Hearts Don't Beat. They Rev...</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
     <main class="flex-grow-1 bg-body-tertiary">
@@ -79,7 +79,7 @@
                                 $link = $row["link"];
                                 echo "<div class='item'>
                                         <div class='card'>
-                                            <div class='ratio ratio-16x9'><img src='".image($row["image"], "updates", 800, 450)."' alt='".$row["title"]."' class='object-fit-cover'></div>
+                                            <div class='ratio ratio-16x9'><img src='".image($row["image"], "updates", 800, 450)."' alt='".$row["title"]."' class='object-fit-cover rounded-top'></div>
                                             <div class='card-body'>
                                                 <h6 class='card-title text-primary'>".$row["title"]."</h6>
                                                 <p class='card-text'>".$row["body"]."</p>
@@ -134,7 +134,7 @@
                     echo "<section>
                             <div class='row gy-3".($i%2==0?null:" flex-row-reverse")."'>
                                 <div class='col-sm-6 col-md-5 col-lg-4'>
-                                    <a href='".$key."' class='ratio ratio-4x3'><img src='".image($data[$key]["hero"], "heros", 416, 312)."' alt='".ucfirst($key)."' class='object-fit-cover'></a>
+                                    <a href='".$key."' class='ratio ratio-4x3'><img src='".image($data[$key]["hero"], "heros", 416, 312)."' alt='".ucfirst($key)."' class='object-fit-cover rounded'></a>
                                 </div>
                                 <div class='col-sm-6 col-md-7 col-lg-8'>
                                     <h2><a href='".$key."' class='text-decoration-none'>".ucfirst($key)."</a></h2>

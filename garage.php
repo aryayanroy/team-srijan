@@ -29,7 +29,7 @@
                             echo "'>
                             <div class='col-sm-6 col-md-5 col-lg-4'>
                                 <div id='car-".$i."-carousel' class='carousel slide' data-bs-ride='carousel'>
-                                    <div class='carousel-inner'>";
+                                    <div class='carousel-inner rounded overflow-hidden'>";
                             $images = json_decode($row["images"]);
                             $j = 1;
                             foreach($images as $image){

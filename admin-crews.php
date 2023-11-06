@@ -106,7 +106,7 @@
                             </tr>
                             <?php
                                 include_once "php/pagination-1.php";
-                                $sql = $conn->prepare("SELECT c.image, c.name, c.year, t.name AS team, c.email, c.link, c.id FROM crews AS c JOIN teams AS t ON c.team = t.id ORDER BY c.name LIMIT ?, 10");
+                                $sql = $conn->prepare("SELECT c.image, c.name, c.year, t.name AS team, c.email, c.link, c.id FROM crews AS c JOIN teams AS t ON c.team = t.id ORDER BY c.year DESC, c.team, c.name LIMIT ?, 10");
                                 $sql->bindParam(1, $offset, PDO::PARAM_INT);
                                 try{
                                     $sql->execute();
@@ -117,7 +117,7 @@
                                                 <td class='text-center'>".++$i."</td>
                                                 <td class='text-center'><img src='".image($row["image"], "history", 54, 54)."' alt='".$row["name"]."' width=54></td>
                                                 <td>".$row["name"]."</td>
-                                                <td class='text-end text-nowrap'>K-".$row["year"]."</td>
+                                                <td class='text-end text-nowrap'>".$row["year"]."</td>
                                                 <td>".$row["team"]."</td>
                                                 <td class='text-break'><a href='mailto:".$row["email"]."' target='_blank' class='text-decoration-none'>".$row["email"]."</a></td>
                                                 <td class='text-break'><a href='".$row["link"]."' target='_blank' class='text-decoration-none'>".$row["link"]."</a></td>
@@ -162,8 +162,8 @@
                             <div class="form-floating">
                                 <select id="year" name="year" class="form-select">
                                 <?php
-                                    for($y=7; $y<=date("y"); $y++){
-                                        echo "<option value=".$y.">K-".$y."</option>";
+                                    for($y=2007; $y<=date("Y"); $y++){
+                                        echo "<option value=".$y.">".$y."</option>";
                                     }
                                 ?>
                                 </select>

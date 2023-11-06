@@ -1,388 +1,131 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crew of 2023 | Team Srijan - Birla Institute of Technology, Mesra</title>
-    <link rel="shortcut icon" href="assets/public/branding/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@1,500;1,700&family=Signika:wght@500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <?php
+        include_once "php/head.php";
+        include_once "php/user-head.php";
+        include_once "php/config.php";
+        if(isset($_GET["year"]) && is_numeric($_GET["year"])){
+            $active_year = $_GET["year"];
+        }else{
+            $sql = $conn->prepare("SELECT DISTINCT MAX(year) FROM crews");
+            try{
+                $sql->execute();
+                $active_year = $sql->fetch(PDO::FETCH_NUM)[0];
+            }catch(PDOException $e) {
+                $active_year = date("Y");
+            }
+        }
+    ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css">
-    <link rel="stylesheet" href="assets/public/css/style.css">
+    <title>Crew of <?php echo $active_year; ?> | Team Srijan - Birla Institute of Technology, Mesra</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <header class="sticky-top">
-        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-            <div class="container-xl">
-                <a href="" class="navbar-brand"><img src="assets/public/branding/team-srijan-logo-white.webp" alt="Team Srijan" height=32></a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#header-collapse"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                <div id="header-collapse" class="collapse navbar-collapse flex-grow-0">
-                    <ul class="navbar-nav">
-                        <li class="nav-item"><a href="garage" class="nav-link">Garage</a></li>
-                        <li class="nav-item"><a href="competitions" class="nav-link">Competitions</a></li>
-                        <li class="nav-item"><a href="updates" class="nav-link">Updates</a></li>
-                        <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Partners</a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a href="sponsors" class="dropdown-item">Sponsors</a></li>
-                                <li><a href="crowdfunding" class="dropdown-item">Crowdfunding</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item"><a href="milestones" class="nav-link">Milestones</a></li>
-                        <li class="nav-item dropdown">
-                            <a href="#" class="nav-link active dropdown-toggle" data-bs-toggle="dropdown">About</a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a href="overview" class="dropdown-item">Overview</a></li>
-                                <li><a href="crews" class="dropdown-item active">Crews</a></li>
-                                <li><a href="gallery" class="dropdown-item">Gallery</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <?php include_once "php/header.php"; ?>
     <main class="flex-grow-1 bg-body-tertiary">
         <article class="container-xxl">
-            <section class="hero-image position-relative" style="background-image: url(uploads/images/brad-tarnopol-ws7FKjDqudM-unsplash.jpg)">
-                <h1 class="mb-0 position-absolute top-50 start-50 translate-middle">Our Crews</h1>
-            </section>
-            <hr>
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled"><a href="#" class="page-link"><i class="fa-solid fa-angle-left"></i></a></li>
-                <li class="page-item"><a href="#" class="page-link active">2023</a></li>
-                <li class="page-item"><a href="#" class="page-link">2022</a></li>
-                <li class="page-item"><a href="#" class="page-link">2021</a></li>
-                <li class="page-item"><a href="#" class="page-link"><i class="fa-solid fa-angle-right"></i></a></li>
-            </ul>
-            <hr>
-            <section>
-                <h2 class="text-center">Vehicle Dynamics</h2>
-                <div class="carousel-container">
-                    <div class="owl-carousel owl-theme">
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/sabrina_carpenter.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Sabrina Carpenter</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/hailee-steinfeld.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Hailee Steinfeld</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/megan-fox.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Megan Fox</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/selena gomez.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Selena Gomez</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/alan-walker.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Alan Walker</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/taylor-swift.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Taylor Swift</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/justin-beiber.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Justin Beiber</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/ariana-grande.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Ariana Grande</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <hr>
-            <section>
-                <h2 class="text-center">Aerodynamics</h2>
-                <div class="carousel-container">
-                    <div class="owl-carousel owl-theme">
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/sabrina_carpenter.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Sabrina Carpenter</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/hailee-steinfeld.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Hailee Steinfeld</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/megan-fox.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Megan Fox</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/selena gomez.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Selena Gomez</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/alan-walker.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Alan Walker</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/taylor-swift.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Taylor Swift</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/justin-beiber.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Justin Beiber</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/ariana-grande.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Ariana Grande</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <hr>
-            <section>
-                <h2 class="text-center">Drive Train</h2>
-                <div class="carousel-container">
-                    <div class="owl-carousel owl-theme">
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/sabrina_carpenter.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Sabrina Carpenter</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/hailee-steinfeld.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Hailee Steinfeld</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/megan-fox.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Megan Fox</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/selena gomez.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Selena Gomez</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/alan-walker.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Alan Walker</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/taylor-swift.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Taylor Swift</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/justin-beiber.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Justin Beiber</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/ariana-grande.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Ariana Grande</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <hr>
-            <section>
-                <h2 class="text-center">Electrical</h2>
-                <div class="carousel-container">
-                    <div class="owl-carousel owl-theme">
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/sabrina_carpenter.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Sabrina Carpenter</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/hailee-steinfeld.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Hailee Steinfeld</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/megan-fox.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Megan Fox</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/selena gomez.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Selena Gomez</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/alan-walker.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Alan Walker</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/taylor-swift.jpg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Taylor Swift</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/justin-beiber.webp" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Justin Beiber</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ratio ratio-1x1 rounded-circle overflow-hidden mb-2"><img src="uploads/images/ariana-grande.jpeg" alt="" class="object-fit-cover"></div>
-                            <h5 class="text-center">Ariana Grande</h5>
-                            <div class="d-flex justify-content-around">
-                                <a href="#" class="link-body-emphasis"><i class="fa-solid fa-envelope"></i></a>
-                                <a href="#" class="link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <?php
+                $page = "crews";
+                include_once "php/page.php";
+            ?>
+            <div class="overflow-x-auto">
+                <ul class="nav nav-pills flex-nowrap flex-md-wrap">
+                    <?php
+                        $sql = $conn->prepare("SELECT DISTINCT year FROM crews ORDER BY year DESC");
+                        try{
+                            $sql->execute();
+                            if($sql->rowCount()>0){
+                                while($row = $sql->fetch(PDO::FETCH_ASSOC)){
+                                    $year = $row["year"];
+                                    echo "<li class='nav-item'>
+                                        <a href='?year=$year' class='nav-link";
+                                    print ($year == $active_year)? " active" : null;
+                                    echo "'>$year</a>
+                                    </li>";
+                                }
+                            }
+                        }catch(PDOException $e){
+                            echo "Internal error: ".$e."";
+                        }
+                    ?>
+                </ul>
+            </div>
+            <?php
+                $sql = $conn->prepare("SELECT c.name, c.image, c.email, c.link, t.id AS team_id, t.name AS team_name FROM crews c JOIN teams t ON c.team = t.id WHERE c.year = ? ORDER BY t.id");
+                $sql->bindParam(1, $active_year, PDO::PARAM_INT);
+
+                try {
+                    $sql->execute();
+                    if($sql->rowCount()>0){
+                        $prev_team = null;
+                        while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
+                            if ($prev_team != $row["team_id"]) {
+                                if ($prev_team !== null) {
+                                    echo "</div></div></section>";
+                                }
+                                echo "<hr><section>";
+                                echo "<h2 class='text-center'>" . $row["team_name"] . "</h2>";
+                                echo "<div class='carousel-container'>
+                                        <div class='owl-carousel owl-theme'>";
+                            }
+    
+                            $name = $row["name"];
+                            $link = $row["link"];
+                            if($link!=null){
+                                $url = parse_url($link);
+                                $host = $url["host"];
+                                $host_parts = explode(".", $host);
+                                if (count($host_parts) >= 3 && $host_parts[0] === "www") {
+                                    $domain = $host_parts[1];
+                                } else {
+                                    $domain = $host_parts[0];
+                                }
+                            }
+                            echo "<div class='item'>
+                                    <div class='ratio ratio-1x1 rounded-circle overflow-hidden mb-2'><img src='" . image($row["image"], "history", 175, 175) . "' alt='$name' class='object-fit-cover'></div>
+                                    <h5 class='text-center'>$name</h5>
+                                    <div class='d-flex justify-content-around'>
+                                        <a href='mailto:".$row["email"]."' class='link-body-emphasis'><i class='fa-solid fa-envelope'></i></a>";
+                            print ($link!=null)?"<a href='".$link."' class='link-body-emphasis'><i class='fa-brands fa-$domain'></i></a>" : null;
+                            echo "</div>
+                                </div>";
+                            $prev_team = $row["team_id"];
+                        }
+                        if ($prev_team !== null) {
+                            echo "</div></div></section>";
+                        }
+                    }else{
+                        echo "<h4 class='text-center'>No crews</h4>";
+                    }
+                } catch (PDOException $e) {
+                    echo "Internal error: " . $e;
+                }
+            ?>
             <hr>
         </article>
     </main>
-    <footer class="navbar bg-body-secondary">
-        <div class="container-xl flex-column flex-sm-row">
-            <nav class="nav">
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-facebook"></i></a>
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="nav-link link-body-emphasis"><i class="fa-brands fa-linkedin"></i></a>
-            </nav>
-            <small class="text-body-emphasis">© 2023 Team Srijan</small>
-        </div>
-    </footer>
+    <?php include_once "php/footer.php"; ?>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<?php include_once "php/scripts.php"; ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 <script>
     $(document).ready(function(){
         $(".owl-carousel").owlCarousel({
-            loop: true,
             margin: 25,
             stagePadding: 75,
-            autoplay:true,
-            autoplayTimeout:3000,
-            autoplayHoverPause:true,
             responsive:{
                 0:{
-                    items: 1
+                    items: 1,
+                    loop:true
                 },
                 375:{
-                    items: 2
+                    items: 2,
+                    loop:true
                 },
                 576:{
-                    items: 3
+                    items: 3,
+                    loop:true
                 },
                 768:{
                     items: 4,

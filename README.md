@@ -18,7 +18,7 @@ INSERT INTO admins (name, email, password, parent) VALUES ("Default User", "btec
 
 CREATE TABLE updates (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image INT NOT NULL UNIQUE,
+    image INT(10) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
     body VARCHAR(1000) NOT NULL,
     link VARCHAR(255) NOT NULL,
@@ -27,21 +27,21 @@ CREATE TABLE updates (
 
 CREATE TABLE gallery (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image INT NOT NULL UNIQUE
+    image INT(10) NOT NULL UNIQUE
 );
 
 CREATE TABLE sponsors(
     id INT AUTO_INCREMENT PRIMARY KEY,
     tier TINYINT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    image INT NOT NULL,
+    image INT(10) NOT NULL,
     link VARCHAR(255) NOT NULL,
     description VARCHAR(1000) NOT NULL
 );
 
 CREATE TABLE milestones (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image INT NOT NULL UNIQUE,
+    image INT(10) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
     body VARCHAR(1000) NOT NULL,
     link VARCHAR(255) NOT NULL
@@ -58,7 +58,7 @@ CREATE TABLE garage (
 
 CREATE TABLE competitions (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image INT NOT NULL UNIQUE,
+    image INT(10) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
     overview VARCHAR(1000) NOT NULL,
     link VARCHAR(255) NOT NULL
@@ -66,8 +66,8 @@ CREATE TABLE competitions (
 
 CREATE TABLE history (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image INT NOT NULL UNIQUE,
-    year INT NOT NULL UNIQUE,
+    image INT(10) NOT NULL UNIQUE,
+    year INT(4) NOT NULL UNIQUE,
     overview VARCHAR(1000) NOT NULL
 );
 
@@ -78,8 +78,8 @@ CREATE TABLE teams (
 
 CREATE TABLE crews (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image INT NOT NULL UNIQUE,
-    year TINYINT NOT NULL,
+    image INT(10) NOT NULL UNIQUE,
+    year INT(4) NOT NULL,
     name VARCHAR(255) NOT NULL,
     team INT NOT NULL,
     email VARCHAR(255) NOT NULL,
