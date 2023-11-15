@@ -7,7 +7,7 @@ USE teamsrijan;
 
 CREATE TABLE admins (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR() NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     parent INT NOT NULL,
@@ -15,6 +15,14 @@ CREATE TABLE admins (
 );
 
 INSERT INTO admins (name, email, password, parent) VALUES ("Default User", "btech@bitmesra.ac.in", "$2y$10$s./JsrwOze5ROHmzliDvgeSWyyqKDM/CyuQ80AfA9hssT.kw5I1J6", 1);
+
+CREATE TABLE pages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    page VARCHAR(255) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
+    hero INT(10) NOT NULL,
+    overview VARCHAR(255),
+);
 
 CREATE TABLE updates (
     id INT AUTO_INCREMENT PRIMARY KEY,

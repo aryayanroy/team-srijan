@@ -4,24 +4,21 @@
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
         $response = array("status" => false, "message" => "No response.");
-        if($_POST["new-password"]==$_POST["verify-password"]){
-            $password = password_hash($_POST["new-password"],PASSWORD_DEFAULT);
-            $sql = $conn->prepare("UPDATE admins SET password = ? WHERE id = ?");
-            $sql->bindParam(1, $password, PDO::PARAM_STR);
-            $sql->bindParam(2, $id, PDO::PARAM_INT);
-            try{
-                $sql->execute();
-                $response["status"] = true;
-                $response["message"] = "Password changed successfully.";
-            }catch(PDOException $e){
-                $response["message"] = "Couldn't change the password: ".$e;
-            }
-        }else{
-            $response["message"] = "Passwords didn't match.";
+
+        $password = password_hash($_POST["new-password"],PASSWORD_DEFAULT);
+        $sql = $conn->prepare("UPDATE admins SET password = ? WHERE id = ?");
+        $sql->bindParam(1, $password, PDO::PARAM_STR);
+        $sql->bindParam(2, $id, PDO::PARAM_INT);
+        try{
+            $sql->execute();
+            $response["status"] = true;
+            $response["message"] = "Password changed successfully.";
+        }catch(PDOException $e){
+            $response["message"] = "Couldn't change the password: ".$e;
         }
     }
 
-    include_once "php/response-1.php";
+    include_once "php/response.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -41,9 +38,9 @@
                     <aside class="border bg-white rounded">
                         <nav class="p-3 nav nav-pills flex-column">
                             <a href="personal" class="nav-link active">Account</a>
-                            <a href="admin-updates" class="nav-link">General</a>
-                            <a href="admin-sponsors" class="nav-link">Sponsorship</a>
-                            <a href="admin-milestones" class="nav-link">Legacy</a>
+                            <a href="home" class="nav-link">General</a>
+                            <a href="sponsor" class="nav-link">Sponsorship</a>
+                            <a href="milestone" class="nav-link">Legacy</a>
                             <a href="admins" class="nav-link">Admins</a>
                         </nav>
                     </aside>
@@ -55,7 +52,7 @@
                             <a href="personal" class="nav-link">Personal</a>
                             <a href="password" class="nav-link active">Passoword</a>
                         </nav>
-                        <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" class="row g-3">
+                        <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" id="input-form" class="row g-3">
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input type="password" id="new-password" name="new-password" class="form-control" placeholder="password" autocomplete="off" required>
@@ -71,9 +68,6 @@
                             <div class="col-3">
                                 <button type="submit" class="btn btn-primary w-100">Save</button>
                             </div>
-                            <div class="col-9">
-                                <?php include_once "php/response-2.php"; ?>
-                            </div>
                         </form>
                     </article>
                 </div>
@@ -85,4 +79,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="assets/public/js/admin.js"></script>
+<script>
+    $(document).ready(function(){
+        var form = $("#input-form");
+        form.submit(function(e){
+            e.preventDefault();
+            var password = $("#new-password").val();
+            if(password == $("#verify-password").val()){
+                var button = $(this).find("button[type=submit]");
+                submit_urlencoded(button, $(this).serializeArray(), "update", function(response){
+                    var data = JSON.parse(response);
+                    alert(data["message"]);
+                    if(data["status"]){
+                        form.trigger("reset")
+                    }
+                })
+            }else{
+                alert("The passwords didn't matched!")
+            }
+        })
+    })
+</script>
 </html>

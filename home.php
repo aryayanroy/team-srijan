@@ -3,9 +3,29 @@
     include_once "php/admin.php";
     include_once "php/imagekit-config.php";
 
-    $page = "home";
-    include_once "php/page-1.php";
-    include_once "php/response-1.php";
+    $page = "index";
+    
+    if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST["action"])){
+        $action = $_POST["action"];
+        $response = array("status" => false, "message" => "No response.");
+        if($action == "insert"){
+            $sql = $conn->prepare("INSERT INTO pages (page, title, hero, overview)
+            VALUES (:page, :title, :hero, :overview)
+            ON DUPLICATE KEY UPDATE title = VALUES(title), hero = VALUES(hero), overview = VALUES(overview)");
+            $sql->bindParam(1, $_POST["name"], PDO::PARAM_STR);
+            $sql->bindParam(2, $_POST["title"], PDO::PARAM_STR);
+            $sql->bindParam(3, $_POST["hero"], PDO::PARAM_INT);
+            $sql->bindParam(4, $_POST["overview"], PDO::PARAM_STR);
+            try{
+                $sql->execute();
+                $response["status"] = true;
+                $response["message"] = "Profile updated successfully";
+            }catch(PDOException $e){
+                $response["message"] = "Couldn't update profile: ".$e;
+            }
+        }
+        include_once "php/response.php";
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -25,9 +45,9 @@
                     <aside class="border bg-white rounded">
                         <nav class="p-3 nav nav-pills flex-column">
                             <a href="personal" class="nav-link">Account</a>
-                            <a href="admin-home" class="nav-link active">General</a>
-                            <a href="admin-sponsors" class="nav-link">Sponsorship</a>
-                            <a href="admin-milestones" class="nav-link">Legacy</a>
+                            <a href="home" class="nav-link active">General</a>
+                            <a href="sponsor" class="nav-link">Sponsorship</a>
+                            <a href="milestone" class="nav-link">Legacy</a>
                             <a href="admins" class="nav-link">Admins</a>
                         </nav>
                     </aside>
@@ -58,4 +78,35 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="assets/public/js/admin.js"></script>
+<script>
+    $(document).ready(function(){
+        function set_data(){
+            load_data([], function(response){
+                var data = JSON.parse(response);
+                if(data["status"]){
+                    data = data["message"][0];
+                    console.log(data);
+                }else{
+                    alert(data["message"]);
+                }
+            });
+        }
+
+        set_data();
+
+        $("#input-form").submit(function(e){
+            e.preventDefault();
+            var form = $(this);
+            var data = new FormData(this);
+            var btn = find_btn(form);
+            submit_multipart(btn, data, 1, function(response){
+                var data = JSON.parse(response);
+                console.log(response)
+                if(data["status"]){
+                    set_data();
+                }
+            })
+        })
+    })
+</script>
 </html>

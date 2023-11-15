@@ -18,19 +18,18 @@
                     $_SESSION["id"] = $admin["id"];
                     header("Location: personal");
                 }else{
-                    $response["message"] = "Invalid password.";
+                    $error = "Invalid password.";
                 }
             }else if($count == 0){
-                $response["message"] = "No account was found.";
+                $error = "No account was found.";
             }else{
-                $response["message"] = "Multiple accounts found. Please contact the administrator.";
+                $error = "Multiple accounts found. Please contact the administrator.";
             }
         }catch(PDOException $e){
-            $response["message"] = "Internal server error.";
+            $error = "Internal server error.";
         }
     }
 
-    include_once "php/response-1.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -61,12 +60,15 @@
                         <label for="password">Password</label>
                     </div>
                     <div class="my-3"><button type="submit" class="btn btn-primary w-100">Login</button></div>
-                    <?php include_once "php/response-2.php"; ?>
+                    <?php
+                        if(isset($error)){
+                            echo "<div class='alert alert-danger mb-0'>".$error."</div>";
+                        }
+                    ?>
                 </form>
             </section>
         </article>
     </main>
     <?php include_once "php/footer.php"; ?>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </html>

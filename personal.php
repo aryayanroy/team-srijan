@@ -1,36 +1,39 @@
 <?php
     include_once "php/session.php";
-    include_once "php/config.php";
-    
-    $sql = $conn->prepare("SELECT name, email FROM admins WHERE id = ?");
-    $sql->bindParam(1, $id, PDO::PARAM_INT);
-    try{
-        $sql->execute();
-        if($sql->rowCount()==1){
-            $admin = $sql->fetch(PDO::FETCH_NUM);
-            $name = $admin[0];
-        }else{
-            header("Location: logout");
-        }
-    }catch(PDOException $e){
-        header("Location: logout");
-    }
+    include_once "php/admin.php";
 
-    if($_SERVER["REQUEST_METHOD"]=="POST"){
+    if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST["action"])){
+        $action = $_POST["action"];
         $response = array("status" => false, "message" => "No response.");
-        $sql = $conn->prepare("UPDATE admins SET name = ? WHERE id = ?");
-        $sql->bindParam(1, $_POST["name"], PDO::PARAM_STR);
-        $sql->bindParam(2, $id, PDO::PARAM_INT);
-        try{
-            $sql->execute();
-            $response["status"] = true;
-            $response["message"] = "Profile updated successfully.";
-        }catch(PDOException $e){
-            $response["message"] = "Coudn't update profile: ".$e;
+        if($action == "update"){
+            $sql = $conn->prepare("UPDATE admins SET name = ? WHERE id = ?");
+            $sql->bindParam(1, $_POST["name"], PDO::PARAM_STR);
+            $sql->bindParam(2, $id, PDO::PARAM_INT);
+            try{
+                $sql->execute();
+                $response["status"] = true;
+                $response["message"] = "Profile updated successfully";
+            }catch(PDOException $e){
+                $response["message"] = "Couldn't update profile: ".$e;
+            }
+        }else if($action == "select"){
+            $sql = $conn->prepare("SELECT name, email FROM admins WHERE id = ?");
+            $sql->bindParam(1, $id, PDO::PARAM_INT);
+            try{
+                $sql->execute();
+                if($sql->rowCount()==1){
+                    $data = $sql->fetchAll(PDO::FETCH_ASSOC);
+                    $response["status"] = true;
+                    $response["message"] = $data;
+                }else{
+                    $response["message"] = "Invalid admins found.";
+                }
+            }catch(PDOException $e){
+                $response["message"] = "Couldn't load data: ".$e;
+            }
         }
+        include_once "php/response.php";
     }
-
-    include_once "php/response-1.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -50,9 +53,9 @@
                     <aside class="border bg-white rounded">
                         <nav class="p-3 nav nav-pills flex-column">
                             <a href="personal" class="nav-link active">Account</a>
-                            <a href="admin-updates" class="nav-link">General</a>
-                            <a href="admin-sponsors" class="nav-link">Sponsorship</a>
-                            <a href="admin-milestones" class="nav-link">Legacy</a>
+                            <a href="home" class="nav-link">General</a>
+                            <a href="sponsor" class="nav-link">Sponsorship</a>
+                            <a href="milestone" class="nav-link">Legacy</a>
                             <a href="admins" class="nav-link">Admins</a>
                         </nav>
                     </aside>
@@ -64,24 +67,21 @@
                             <a href="personal" class="nav-link active">Personal</a>
                             <a href="password" class="nav-link">Passoword</a>
                         </nav>
-                        <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" class="row g-3">
+                        <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" id="input-form" class="row g-3">
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input type="text" id="name" name="name" class="form-control" placeholder="Name" spellcheck="false" autocomplete="off" value="<?php echo $admin[0];?>" required>
+                                    <input type="text" id="name" name="name" class="form-control" placeholder="Name" spellcheck="false" autocomplete="off" value="" required>
                                     <label for="name">Full name</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input type="email" id="email" class="form-control" placeholder="Email" value="<?php echo $admin[1];?>" disabled required>
+                                    <input type="email" id="email" class="form-control" placeholder="Email" value="" disabled required>
                                     <label for="email">Email address</label>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <button type="submit" class="btn btn-primary w-100">Save</button>
-                            </div>
-                            <div class="col-9">
-                                <?php include_once "php/response-2.php"; ?>
                             </div>
                         </form>
                     </article>
@@ -90,8 +90,41 @@
         </div>
     </main>
     <?php include_once "php/footer.php"; ?>
+    <?php include_once "php/loading.php"; ?>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 <script src="assets/public/js/admin.js"></script>
+<script>
+    $(document).ready(function(){
+        function set_data(){
+            load_data([], function(response){
+                var data = JSON.parse(response);
+                if(data["status"]){
+                    data = data["message"][0];
+                    $("#name").val(data["name"])
+                    $("#email").val(data["email"])
+                }else{
+                    alert(data["message"]);
+                }
+            });
+        }
+
+        set_data();
+
+        $("#input-form").submit(function(e){
+            e.preventDefault();
+            var form = $(this);
+            var data = form.serializeArray();
+            var btn = find_btn(form);
+            submit_urlencoded(btn, data, 0, function(response){
+                var data = JSON.parse(response);
+                alert(data["message"]);
+                if(data["status"]){
+                    set_data();
+                }
+            })
+        })
+    })
+</script>
 </html>
