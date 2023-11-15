@@ -1,5 +1,13 @@
-# formula-student
-This is an interactive website for EV formula student club, "Team Srijan" - BIT Mesra
+This GitHub repository hosts the source code for the Team Srijan Club Portfolio Site, the official Formula Student Club website of BIT Mesra. The site provides a dynamic platform for administrators to seamlessly manage and showcase updates, legacy information, and other essential details. Key features include:
+
+1. Dynamic Data Fetching: Utilizes AJAX API to fetch data dynamically, ensuring real-time updates.
+2. Pagination: Enables easy navigation and organization of content through a paginated interface.
+3. Mobile Responsiveness: Ensures optimal viewing experience across a variety of devices for on-the-go access.
+4. Admin Privileges: Administrators have the capability to appoint and remove other admins, maintaining control over site management.
+
+
+
+Execute the following queries within the MySQL database:
 
 CREATE DATABASE teamsrijan;
 
