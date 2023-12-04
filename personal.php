@@ -4,17 +4,18 @@
 
     if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST["action"])){
         $action = $_POST["action"];
-        $response = array("status" => false, "message" => "No response.");
+        $response = [false];
         if($action == "update"){
             $sql = $conn->prepare("UPDATE admins SET name = ? WHERE id = ?");
             $sql->bindParam(1, $_POST["name"], PDO::PARAM_STR);
             $sql->bindParam(2, $id, PDO::PARAM_INT);
             try{
                 $sql->execute();
-                $response["status"] = true;
-                $response["message"] = "Profile updated successfully";
+                $response[0] = true;
+                $response[1][] = "Profile updated successfully";
             }catch(PDOException $e){
-                $response["message"] = "Couldn't update profile: ".$e;
+                $response[1][] = "Couldn't update profile.";
+                $response[2][] = $e->getMessage();
             }
         }else if($action == "select"){
             $sql = $conn->prepare("SELECT name, email FROM admins WHERE id = ?");
@@ -23,13 +24,14 @@
                 $sql->execute();
                 if($sql->rowCount()==1){
                     $data = $sql->fetchAll(PDO::FETCH_ASSOC);
-                    $response["status"] = true;
-                    $response["message"] = $data;
+                    $response[0] = true;
+                    $response[1] = $data[0];
                 }else{
-                    $response["message"] = "Invalid admins found.";
+                    $response[1][] = "Invalid admins found.";
                 }
             }catch(PDOException $e){
-                $response["message"] = "Couldn't load data: ".$e;
+                $response[1][] = "Couldn't load data.";
+                $response[2][] = $e->getMessage();
             }
         }
         include_once "php/response.php";
@@ -53,7 +55,7 @@
                     <aside class="border bg-white rounded">
                         <nav class="p-3 nav nav-pills flex-column">
                             <a href="personal" class="nav-link active">Account</a>
-                            <a href="home" class="nav-link">General</a>
+                            <a href="pages" class="nav-link">General</a>
                             <a href="sponsor" class="nav-link">Sponsorship</a>
                             <a href="milestone" class="nav-link">Legacy</a>
                             <a href="admins" class="nav-link">Admins</a>
@@ -85,6 +87,7 @@
                             </div>
                         </form>
                     </article>
+                    <div id="asd"></div>
                 </div>
             </div>
         </div>
@@ -100,12 +103,12 @@
         function set_data(){
             load_data([], function(response){
                 var data = JSON.parse(response);
-                if(data["status"]){
-                    data = data["message"][0];
-                    $("#name").val(data["name"])
-                    $("#email").val(data["email"])
+                if(data[0]){
+                    data = data[1];
+                    $("#name").val(data.name);
+                    $("#email").val(data.email);
                 }else{
-                    alert(data["message"]);
+                    response_messages(data[1], data[2]);
                 }
             });
         }
@@ -119,10 +122,10 @@
             var btn = find_btn(form);
             submit_urlencoded(btn, data, 0, function(response){
                 var data = JSON.parse(response);
-                alert(data["message"]);
-                if(data["status"]){
+                if(data[0]==true){
                     set_data();
                 }
+                response_messages(data[1], data[2]);
             })
         })
     })

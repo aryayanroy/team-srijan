@@ -81,7 +81,7 @@
                                         <div class='card'>
                                             <div class='ratio ratio-16x9'><img src='".image($row["image"], "updates", 800, 450)."' alt='".$row["title"]."' class='object-fit-cover rounded-top'></div>
                                             <div class='card-body'>
-                                                <h6 class='card-title text-primary'>".$row["title"]."</h6>
+                                                <h5 class='card-title'>".$row["title"]."</h5>
                                                 <p class='card-text'>".$row["body"]."</p>
                                                 <div class='small'>".(new DateTime($row["date"]))->format("j M Y")."</div>";
                                             if($link!=null){

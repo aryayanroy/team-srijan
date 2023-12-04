@@ -24,18 +24,22 @@
     }
 
     function upload($image, $name, $folder){
-        global $imageKit;
-        $upload = $imageKit->uploadFile([
-            "file" => fopen($image, "r"),
-            "fileName" => $name,
-            "useUniqueFileName" => false,
-            "folder" => $folder
-        ]);
-        $status = $upload->responseMetadata["statusCode"];
-        if($upload->error == null && $status == 200){
-            return true;
+        if($image["error"] == 0){
+            global $imageKit;
+            $upload = $imageKit->uploadFile([
+                "file" => fopen($image["tmp_name"], "r"),
+                "fileName" => $name,
+                "useUniqueFileName" => false,
+                "folder" => $folder
+            ]);
+            $status = $upload->responseMetadata["statusCode"];
+            if($status == 200){
+                return true;
+            }else{
+                return $upload->error->message;
+            }
         }else{
-            return $status;
+            return "No image was uploaded.";
         }
     }
 ?>

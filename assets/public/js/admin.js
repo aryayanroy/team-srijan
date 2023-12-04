@@ -72,4 +72,18 @@ $(document).ready(function(){
         loading.modal("show");
     }
 
+    window.response_messages = function(alert_msgs, console_msgs){
+        if(alert_msgs.length == 0){
+            alert("No response");
+        }else{
+            $.each(alert_msgs, function(_, msg1){
+                alert(msg1);
+            })
+        }
+
+        $.each(console_msgs, function(_, msg2){
+            console.log(msg2);
+        })
+    }
+
 })

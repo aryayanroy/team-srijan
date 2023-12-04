@@ -6,7 +6,7 @@
     if($_SERVER["REQUEST_METHOD"]=="POST"){
         $response = array("status" => false, "message" => "No response.");
         $image = time();
-        $upload = upload($_FILES["image"]["tmp_name"], $image, "updates");
+        $upload = upload($_FILES["image"], $image, "updates");
         if($upload == true){
             $sql = $conn->prepare("INSERT INTO updates (image, title, body, link) VALUES (?, ?, ?, ?)");
             $sql->bindParam(1, $image, PDO::PARAM_INT);

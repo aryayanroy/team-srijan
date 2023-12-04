@@ -45,7 +45,7 @@
                     <aside class="border bg-white rounded">
                         <nav class="p-3 nav nav-pills flex-column">
                             <a href="personal" class="nav-link">Account</a>
-                            <a href="home" class="nav-link active">General</a>
+                            <a href="page" class="nav-link active">General</a>
                             <a href="sponsor" class="nav-link">Sponsorship</a>
                             <a href="milestone" class="nav-link">Legacy</a>
                             <a href="admins" class="nav-link">Admins</a>
@@ -56,13 +56,13 @@
                     <article class="p-3 border bg-white rounded">
                         <h3 class="pb-2 border-bottom">General</h3>
                         <nav class="nav nav-underline nav-fill">
+                            <a href="page" class="nav-link">Page</a>
                             <a href="home" class="nav-link active">Home</a>
                             <a href="admin-updates" class="nav-link">Updates</a>
                             <a href="links" class="nav-link">Links</a>
                             <a href="admin-gallery" class="nav-link">Gallery</a>
                         </nav>
                         <nav class="nav nav-underline nav-fill mt-2">
-                            <a href="home" class="nav-link active">Basic</a>
                             <a href="banners" class="nav-link">Banners</a>
                             <a href="alert" class="nav-link">Alert</a>
                             <a href="legacy" class="nav-link">Legacy</a>

@@ -38,7 +38,7 @@
                     <aside class="border bg-white rounded">
                         <nav class="p-3 nav nav-pills flex-column">
                             <a href="personal" class="nav-link active">Account</a>
-                            <a href="home" class="nav-link">General</a>
+                            <a href="pages" class="nav-link">General</a>
                             <a href="sponsor" class="nav-link">Sponsorship</a>
                             <a href="milestone" class="nav-link">Legacy</a>
                             <a href="admins" class="nav-link">Admins</a>
