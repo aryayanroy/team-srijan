@@ -8,9 +8,9 @@ $(document).ready(function(){
 
     function def_action(action){
         if(action){
-            action = "insert";
+            action = 1;
         }else{
-            action = "update";
+            action = 2;
         }
         return action;
     }
@@ -57,7 +57,7 @@ $(document).ready(function(){
 
     window.load_data = function(data, callback) {
         var loading = $("#loading");
-        data.push({name: "action", value: "select"});
+        data.push({name: "action", value: 0});
         data = $.param(data);
         loading.on("shown.bs.modal", function(){
             $.post(
@@ -73,8 +73,8 @@ $(document).ready(function(){
     }
 
     window.response_messages = function(alert_msgs, console_msgs){
-        if(alert_msgs.length == 0){
-            alert("No response");
+        if(!alert_msgs){
+            alert("No response.");
         }else{
             $.each(alert_msgs, function(_, msg1){
                 alert(msg1);

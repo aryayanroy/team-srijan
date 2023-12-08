@@ -6,11 +6,19 @@
     if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST["action"])){
         $action = $_POST["action"];
         $response = [false];
-        if($action == "insert"){
+        if($action == 0){
+            $sql = $conn->prepare("SELECT image, page, title, overview FROM pages");
+            $sql->execute();
+            if($sql->rowCount()==1){
+                $data = $sql->fetchAll(PDO::FETCH_ASSOC);
+            }else{
+
+            }
+        }elseif($action == 1){
             $image = time();
             $upload = upload($_FILES["hero"], $image, "heros");
             if($upload === true){
-                $sql = $conn->prepare("INSERT INTO pages (page, title, hero, overview) VALUES (?, ?, ?, ?)");
+                $sql = $conn->prepare("INSERT INTO pages (page, title, image, overview) VALUES (?, ?, ?, ?)");
                 $sql->bindParam(1, $_POST["page"], PDO::PARAM_STR);
                 $sql->bindParam(2, $_POST["title"], PDO::PARAM_STR);
                 $sql->bindParam(3, $image, PDO::PARAM_INT);
@@ -24,7 +32,8 @@
                     $response[2][] = $e->getMessage();
                 }
             }else{
-                $response[1][] = $upload;
+                $response[1][] = "Couldn't upload image";
+                $response[2][] = $upload;
             }
         }
         include_once "php/response.php";
@@ -129,6 +138,7 @@
             </form>
         </div>
     </div>
+    <?php include_once "php/loading.php"; ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -148,12 +158,13 @@
 
         function set_data(){
             load_data([], function(response){
+                console.log(response);
                 var data = JSON.parse(response);
-                if(data["status"]){
+                if(data[0]){
                     data = data["message"][0];
                     console.log(data);
                 }else{
-                    alert(data["message"]);
+                    response_messages(data[1], data[2]);
                 }
             });
         }
@@ -167,6 +178,11 @@
             var btn = find_btn(form);
             submit_multipart(btn, data, 1, function(response){
                 var data = JSON.parse(response);
+                if(data[0]){
+                    form[0].reset();
+                    $("#hero-image").attr("src", "");
+                    $("#add-page").modal("hide")
+                }
                 response_messages(data[1], data[2]);
             })
         })

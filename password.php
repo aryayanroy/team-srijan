@@ -3,22 +3,21 @@
     include_once "php/admin.php";
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
-        $response = array("status" => false, "message" => "No response.");
-
-        $password = password_hash($_POST["new-password"],PASSWORD_DEFAULT);
+        $response = [false];
+        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
         $sql = $conn->prepare("UPDATE admins SET password = ? WHERE id = ?");
         $sql->bindParam(1, $password, PDO::PARAM_STR);
         $sql->bindParam(2, $id, PDO::PARAM_INT);
         try{
             $sql->execute();
-            $response["status"] = true;
-            $response["message"] = "Password changed successfully.";
+            $response[0] = true;
+            $response[1][] = "Password changed successfully.";
         }catch(PDOException $e){
-            $response["message"] = "Couldn't change the password: ".$e;
+            $response[1][] = "Couldn't change the password.";
+            $response[2][] = $e->getMessage();
         }
+        include_once "php/response.php";
     }
-
-    include_once "php/response.php";
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -55,13 +54,13 @@
                         <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post" id="input-form" class="row g-3">
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input type="password" id="new-password" name="new-password" class="form-control" placeholder="password" autocomplete="off" required>
+                                    <input type="password" id="new-password" name="password" class="form-control" placeholder="password" autocomplete="off" required>
                                     <label for="new-password">New password</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input type="password" id="verify-password" name="verify-password" class="form-control" placeholder="password" autocomplete="off" required>
+                                    <input type="password" id="verify-password" class="form-control" placeholder="password" autocomplete="off" required>
                                     <label for="verify-password">Verify password</label>
                                 </div>
                             </div>
@@ -81,23 +80,23 @@
 <script src="assets/public/js/admin.js"></script>
 <script>
     $(document).ready(function(){
-        var form = $("#input-form");
-        form.submit(function(e){
+
+        $("#input-form").submit(function(e){
             e.preventDefault();
-            var password = $("#new-password").val();
-            if(password == $("#verify-password").val()){
-                var button = $(this).find("button[type=submit]");
-                submit_urlencoded(button, $(this).serializeArray(), "update", function(response){
+            if($("#new-password").val() == $("#verify-password").val()){
+                var form = $(this);
+                submit_urlencoded(find_btn(form), form.serializeArray(), 0, function(response){
                     var data = JSON.parse(response);
-                    alert(data["message"]);
-                    if(data["status"]){
-                        form.trigger("reset")
+                    if(data[0]==true){
+                        form[0].reset();
                     }
+                    response_messages(data[1], data[2]);
                 })
             }else{
                 alert("The passwords didn't matched!")
             }
         })
+
     })
 </script>
 </html>

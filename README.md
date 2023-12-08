@@ -15,7 +15,7 @@ USE teamsrijan;
 
 CREATE TABLE admins (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR() NOT NULL,
+    name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     parent INT NOT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE pages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     page VARCHAR(255) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
-    hero INT(10) NOT NULL,
-    overview VARCHAR(255),
+    image INT(10) NOT NULL,
+    overview VARCHAR(255)
 );
 
 CREATE TABLE updates (

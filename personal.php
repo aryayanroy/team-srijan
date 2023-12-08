@@ -5,19 +5,7 @@
     if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST["action"])){
         $action = $_POST["action"];
         $response = [false];
-        if($action == "update"){
-            $sql = $conn->prepare("UPDATE admins SET name = ? WHERE id = ?");
-            $sql->bindParam(1, $_POST["name"], PDO::PARAM_STR);
-            $sql->bindParam(2, $id, PDO::PARAM_INT);
-            try{
-                $sql->execute();
-                $response[0] = true;
-                $response[1][] = "Profile updated successfully";
-            }catch(PDOException $e){
-                $response[1][] = "Couldn't update profile.";
-                $response[2][] = $e->getMessage();
-            }
-        }else if($action == "select"){
+        if($action == 0){
             $sql = $conn->prepare("SELECT name, email FROM admins WHERE id = ?");
             $sql->bindParam(1, $id, PDO::PARAM_INT);
             try{
@@ -31,6 +19,18 @@
                 }
             }catch(PDOException $e){
                 $response[1][] = "Couldn't load data.";
+                $response[2][] = $e->getMessage();
+            }
+        }elseif($action == 1){
+            $sql = $conn->prepare("UPDATE admins SET name = ? WHERE id = ?");
+            $sql->bindParam(1, $_POST["name"], PDO::PARAM_STR);
+            $sql->bindParam(2, $id, PDO::PARAM_INT);
+            try{
+                $sql->execute();
+                $response[0] = true;
+                $response[1][] = "Profile updated successfully";
+            }catch(PDOException $e){
+                $response[1][] = "Couldn't update profile.";
                 $response[2][] = $e->getMessage();
             }
         }
@@ -118,9 +118,7 @@
         $("#input-form").submit(function(e){
             e.preventDefault();
             var form = $(this);
-            var data = form.serializeArray();
-            var btn = find_btn(form);
-            submit_urlencoded(btn, data, 0, function(response){
+            submit_urlencoded(find_btn(form), form.serializeArray(), 0, function(response){
                 var data = JSON.parse(response);
                 if(data[0]==true){
                     set_data();
