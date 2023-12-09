@@ -8,11 +8,11 @@
         "https://ik.imagekit.io/xbf1dqndy"
     );
 
-    function image($image, $folder, $width, $height){
+    function image($folder, $width, $height){
         global $imageKit;
         return $imageKit->url(
             [
-                "path" => $folder."/".$image,
+                "path" => $folder,
                 "transformation" => [
                     [
                         "format" => "webp",

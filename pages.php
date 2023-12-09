@@ -6,17 +6,23 @@
     if($_SERVER["REQUEST_METHOD"]=="POST" && isset($_POST["action"])){
         $action = $_POST["action"];
         $response = [false];
+        $img_dir = "heros";
         if($action == 0){
-            $sql = $conn->prepare("SELECT image, page, title, overview FROM pages");
-            $sql->execute();
-            if($sql->rowCount()==1){
-                $data = $sql->fetchAll(PDO::FETCH_ASSOC);
-            }else{
-
+            $sql = $conn->prepare("SELECT * FROM pages");
+            try{
+                $sql->execute();
+                $response[0] = true;
+                if($sql->rowCount() >= 1){
+                    $response[1] = $sql->fetchAll(PDO::FETCH_NUM);
+                }
+                $response[2] = image($img_dir, 80, 45);
+            }catch(PDOException $e){
+                $response[1][] = "Couldn't fetch records.";
+                $response[2][] = $e->getMessage();
             }
         }elseif($action == 1){
             $image = time();
-            $upload = upload($_FILES["hero"], $image, "heros");
+            $upload = upload($_FILES["hero"], $image, $img_dir);
             if($upload === true){
                 $sql = $conn->prepare("INSERT INTO pages (page, title, image, overview) VALUES (?, ?, ?, ?)");
                 $sql->bindParam(1, $_POST["page"], PDO::PARAM_STR);
@@ -32,8 +38,19 @@
                     $response[2][] = $e->getMessage();
                 }
             }else{
-                $response[1][] = "Couldn't upload image";
+                $response[1][] = "Couldn't upload image.";
                 $response[2][] = $upload;
+            }
+        }elseif($action == 3){
+            $sql = $conn->prepare("DELETE FROM pages WHERE id = ?");
+            $sql->bindParam(1, $_POST["id"], PDO::PARAM_INT);
+            try{
+                $sql->execute();
+                $response[0] = true;
+                $response[1][] = "Page removed successfully.";
+            }catch(PDOException $e){
+                $response[1][] = "Couldn't remove page.";
+                $response[2][] = $e->getMessage();
             }
         }
         include_once "php/response.php";
@@ -78,13 +95,12 @@
                         <div class="my-3 text-end">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-page"><i class="fa-solid fa-plus me-2"></i><span>Add page</span></button>
                         </div>
-                        <table class="table table-sm table-striped">
+                        <table id="data-table" class="table table-sm table-striped">
                             <tr>
-                                <th class="text-center">Page</th>
-                                <th class="text-center">Hero</th>
+                                <th class="text-center" colspan="2">Page</th>
                                 <th class="text-center">Title</th>
+                                <th class="text-center">Hero</th>
                                 <th class="text-center">Overview</th>
-                                <th class="text-center">Action</th>
                             </tr>
                         </table>
                     </article>
@@ -158,11 +174,28 @@
 
         function set_data(){
             load_data([], function(response){
-                console.log(response);
                 var data = JSON.parse(response);
                 if(data[0]){
-                    data = data["message"][0];
-                    console.log(data);
+                    var table = $("#data-table");
+                    table.find("tr:not(:first)").remove();
+                    if(data[1]){
+                        var new_row;
+                        $.each(data[1], function(_, row){
+                            new_row = $("<tr>");
+                            $.each(row, function(i, col){
+                                if(i==0){
+                                    new_row.append("<td class='text-center'><button type='button' class='btn btn-link link-danger btn-sm delete-btn' value='"+col+"'><i class='fa-solid fa-trash'></i></button></td>")
+                                }else if(i==3){
+                                    new_row.append("<td class='text-center'><img src='"+data[2]+"/"+col+"'></td>")
+                                }else{
+                                    new_row.append("<td>"+col+"</td>")
+                                }
+                            })
+                            table.append(new_row);
+                        })
+                    }else{
+                        null_rows(table)
+                    }
                 }else{
                     response_messages(data[1], data[2]);
                 }
@@ -180,8 +213,19 @@
                 var data = JSON.parse(response);
                 if(data[0]){
                     form[0].reset();
-                    $("#hero-image").attr("src", "");
-                    $("#add-page").modal("hide")
+                    $("#hero-image").attr("src", null);
+                    $("#add-page").modal("hide");
+                    set_data();
+                }
+                response_messages(data[1], data[2]);
+            })
+        })
+
+        $(document).on("click", ".delete-btn", function(){
+            submit_delete($(this), function(response){
+                var data = JSON.parse(response);
+                if(data[0]){
+                    set_data();
                 }
                 response_messages(data[1], data[2]);
             })

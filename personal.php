@@ -28,7 +28,7 @@
             try{
                 $sql->execute();
                 $response[0] = true;
-                $response[1][] = "Profile updated successfully";
+                $response[1][] = "Profile updated successfully.";
             }catch(PDOException $e){
                 $response[1][] = "Couldn't update profile.";
                 $response[2][] = $e->getMessage();

@@ -52,7 +52,24 @@ $(document).ready(function(){
     }
     
     window.submit_delete = function(btn, callback){
-
+        if(confirm("You are about to remove this entry from the lineup.")){
+            var init_txt = btn.html();
+            btn.prop("disabled", true).html(loading);
+            var data = {
+                id: btn.val(),
+                action: 3
+            };
+            $.post(
+                url,
+                data
+            ).done(function(response){
+                callback(response);
+            }).always(function(){
+                btn.prop("disabled", false).html(init_txt);
+            }).fail(function(jqXHR, txtStatus, errorThrown) {
+                alert(txtStatus+" ("+jqXHR.status+"): "+errorThrown);
+            })   
+        }
     }
 
     window.load_data = function(data, callback) {
@@ -84,6 +101,13 @@ $(document).ready(function(){
         $.each(console_msgs, function(_, msg2){
             console.log(msg2);
         })
+    }
+
+    window.null_rows = function(table){
+        var span = table.find("tr:first-child>th").length;
+        var row = $("<tr>");
+        row.append("<td colspan='"+span+"' class='text-center'>No records found.</td>");
+        table.append(row);
     }
 
 })
